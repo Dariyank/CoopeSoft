@@ -8,4 +8,4 @@ const numero1 = 5;
 const numero2 = 10;
 const resultado = sumar(numero1, numero2);
 
-console.log("La suma de", numero1, "y", numero2, "es:", resultado);
+console.log("La suma dde", numero1, "y", numero2, "es:", resultado);
