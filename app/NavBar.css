@@ -1,0 +1,30 @@
+/* Estilos generales */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden; /* Evita el scroll horizontal */
+  }
+  
+  /* Navbar */
+  nav {
+    position: sticky; /* Permite que el navbar se quede pegado al top */
+    top: 0; /* Se mantiene en la parte superior */
+    width: 100%; /* Asegura que el navbar tenga el mismo ancho */
+    z-index: 100; /* Asegura que el navbar se quede por encima del contenido */
+    background-color: #fff; /* Color de fondo para asegurar visibilidad */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Opcional: agrega sombra al navbar */
+  }
+  
+  /* Contenido */
+  body {
+    height: 100vh; /* Hace que el cuerpo ocupe toda la altura de la ventana */
+    overflow-y: scroll; /* Permite el scroll en el cuerpo */
+    padding-top: 70px; /* Opcional: da espacio debajo del navbar si es sticky */
+  }
+  
+  main {
+    overflow-y: scroll; /* Permite el scroll solo en el contenido */
+    height: calc(100vh - 70px); /* Ocupa el resto del espacio disponible después del navbar */
+  }
+  
