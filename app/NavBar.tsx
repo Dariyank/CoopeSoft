@@ -11,13 +11,13 @@ const Navbar = () => {
 
   const links = [
     { label: "Lista de Socios", href: "/ListaSocios" },
-    { label: "Lista de Representantes", href: "/listaRepresentantes" },
-    { label: "Lista de prestamos", href: "/listaPrestamos" },
+    { label: "Lista de Representantes", href: "/ListaRepresentantes" },
+    { label: "Lista de prestamos", href: "/ListaPrestamos" },
     { label: "Lista de movimientos", href: "/ListaMovimientos" },
   ];
 
   return (
-    <nav className="bg-gray-100 flex items-center px-6 py-6 h-[65px] mb-5">
+    <nav className="bg-slate-50 flex items-center px-6 py-6 h-[65px] mb-5">
       {/* Logo Section */}
       <div className="flex-shrink-0 w-[150px] text-xl font-bold" style={{ color: "#00755D" }}>
         <Link href="/">
@@ -30,7 +30,7 @@ const Navbar = () => {
         {links.map((link) => (
           <li
             key={link.href}
-            className={`w-[125px] text-center text-[16px] flex items-center justify-center h-[50px] border-4
+            className={`w-[125px] text-center font-bold text-[16px] flex items-center justify-center h-[50px] border-4
               ${link.href === currentPath ? "border-[#00755D] text-[#00755D]" : "border-transparent text-[#00755D] hover:text-[#444444] transition-colors"} 
               rounded-md cursor-pointer`}
             style={{ padding: "7px" }}  // 7px padding between text and border
