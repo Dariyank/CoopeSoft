@@ -30,9 +30,9 @@ const Navbar = () => {
         {links.map((link) => (
           <li
             key={link.href}
-            className={`w-[125px] text-center font-bold text-[16px] flex items-center justify-center h-[50px] border-4
+            className={`w-[145px] text-center font-bold text-[16px] flex items-center justify-center h-[50px] border-2 
               ${link.href === currentPath ? "border-[#00755D] text-[#00755D]" : "border-transparent text-[#00755D] hover:text-[#444444] transition-colors"} 
-              rounded-md cursor-pointer`}
+              rounded-md  cursor-pointer`}
             style={{ padding: "7px" }}  // 7px padding between text and border
           >
             <Link href={link.href}>
