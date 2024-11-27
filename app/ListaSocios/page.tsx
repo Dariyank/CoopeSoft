@@ -53,11 +53,42 @@ const ListaSocios = () => {
       estado: "Activo",
       empresa: "Victorina",
     },
+    {
+      id: "402-1587291-4",
+      nombre: "Ramon Tolentino",
+      email: "ramon1544@email.com",
+      registro: "2022-01-23",
+      montoAhorrado: 175500,
+      estado: "Activo",
+      empresa: "Claro Dominicana",
+    },
+    {
+      id: "001-8641576-3",
+      nombre: "Cristian Casablanca",
+      email: "blanco.la.para@johndoe.com",
+      registro: "2022-01-09",
+      montoAhorrado: 237467,
+      estado: "Activo",
+      empresa: "Edeeste",
+    },
+    {
+      id: "001-4486135-4",
+      nombre: "Manuel Turiso",
+      email: "turiso.m@company.com",
+      registro: "2022-02-11",
+      montoAhorrado: 62500,
+      estado: "Activo",
+      empresa: "CCN",
+    },
   ]);
 
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+
   const menuRef = useRef<HTMLDivElement>(null); // Referencia para el menú
 
   // Cerrar el menú si se hace clic fuera de él
@@ -95,6 +126,10 @@ const ListaSocios = () => {
       value.toString().toLowerCase().includes(search.toLowerCase())
     )
   );
+
+  const totalPages = Math.ceil(filteredSocios.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const currentData = filteredSocios.slice(startIndex, startIndex + rowsPerPage);
 
   // Toggle menú de ordenamiento
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
@@ -195,7 +230,7 @@ const ListaSocios = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredSocios.map((socio, index) => (
+            {currentData.map((socio, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
@@ -213,15 +248,71 @@ const ListaSocios = () => {
                 <td className="p-2 border border-gray-300">{socio.estado}</td>
                 <td className="p-2 border border-gray-300">{socio.empresa}</td>
                 <td className="p-2 border border-gray-300 text-center">
-                  <Link href={`/ListaSocios/${socio.nombre}`} className="text-[#00755D] hover:text-[#e6be31]">
-                      <IoEyeSharp className="inline-block" size={25}  />
+                  <Link
+                    href={`/ListaSocios/${socio.nombre}`}
+                    className="text-[#00755D] hover:text-[#e6be31]"
+                  >
+                    <IoEyeSharp className="inline-block" size={25} />
                   </Link>
                 </td>
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
+       {/* Paginación */}
+       <div className="flex justify-between items-center p-4">
+          <select
+            value={rowsPerPage}
+            onChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))}
+            className="border border-gray-300 rounded-md p-2"
+          >
+            {[5, 10, 15, 20].map((rows) => (
+              <option key={rows} value={rows}>
+                {rows} por página
+              </option>
+            ))}
+          </select>
+
+          <div>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+            >
+              Inicio
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+            >
+              Anterior
+            </button>
+            <span>
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === totalPages ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white"
+              }`}
+            >
+              Siguiente
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === totalPages ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white "
+              }`}
+            >
+              Fin
+            </button>
+          </div>
+        </div>
     </div>
   );
 };
