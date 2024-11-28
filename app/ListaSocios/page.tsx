@@ -4,92 +4,88 @@ import React, { useState, useEffect, useRef } from "react";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
+import { useSocio } from "../useSocio/page"; // Importa el hook del contexto
 
-interface Socio {
-  id: string;
-  nombre: string;
-  email: string;
-  registro: string;
-  montoAhorrado: number;
-  estado: string;
-  empresa: string;
-}
 
 const ListaSocios = () => {
-  const [socios, setSocios] = useState<Socio[]>([
-    {
-      id: "402-1587291-4",
-      nombre: "Ramon Tolentino",
-      email: "ramon1544@email.com",
-      registro: "2022-01-23",
-      montoAhorrado: 175500,
-      estado: "Activo",
-      empresa: "Claro Dominicana",
-    },
-    {
-      id: "001-8641576-3",
-      nombre: "Cristian Casablanca",
-      email: "blanco.la.para@johndoe.com",
-      registro: "2022-01-09",
-      montoAhorrado: 237467,
-      estado: "Activo",
-      empresa: "Edeeste",
-    },
-    {
-      id: "001-4486135-4",
-      nombre: "Manuel Turiso",
-      email: "turiso.m@company.com",
-      registro: "2022-02-11",
-      montoAhorrado: 62500,
-      estado: "Activo",
-      empresa: "CCN",
-    },
-    {
-      id: "402-5593143-9",
-      nombre: "Karol Gichola",
-      email: "la-mas-bichota@email.com",
-      registro: "2022-03-13",
-      montoAhorrado: 311528.5,
-      estado: "Activo",
-      empresa: "Victorina",
-    },
-    {
-      id: "402-1587291-4",
-      nombre: "Ramon Tolentino",
-      email: "ramon1544@email.com",
-      registro: "2022-01-23",
-      montoAhorrado: 175500,
-      estado: "Activo",
-      empresa: "Claro Dominicana",
-    },
-    {
-      id: "001-8641576-3",
-      nombre: "Cristian Casablanca",
-      email: "blanco.la.para@johndoe.com",
-      registro: "2022-01-09",
-      montoAhorrado: 237467,
-      estado: "Activo",
-      empresa: "Edeeste",
-    },
-    {
-      id: "001-4486135-4",
-      nombre: "Manuel Turiso",
-      email: "turiso.m@company.com",
-      registro: "2022-02-11",
-      montoAhorrado: 62500,
-      estado: "Activo",
-      empresa: "CCN",
-    },
-  ]);
-
+  const { socios, setSocios } = useSocio(); // Obtén los datos del contexto
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-
-  const menuRef = useRef<HTMLDivElement>(null); // Referencia para el menú
+  // Inicializa la lista de socios una vez (si está vacía)
+  useEffect(() => {
+    if (socios.length === 0) {
+      setSocios([
+        {
+          id: "402-1587291-4",
+          nombre: "Ramon Tolentino",
+          email: "ramon1544@email.com",
+          registro: "2022-01-23",
+          montoAhorrado: 175500,
+          estado: "Activo",
+          empresa: "Claro Dominicana",
+        },
+        {
+          id: "001-8641576-3",
+          nombre: "Cristian Casablanca",
+          email: "blanco.la.para@johndoe.com",
+          registro: "2022-01-09",
+          montoAhorrado: 237467,
+          estado: "Activo",
+          empresa: "Edeeste",
+        },
+        {
+          id: "001-4486135-4",
+          nombre: "Manuel Turiso",
+          email: "turiso.m@company.com",
+          registro: "2022-02-11",
+          montoAhorrado: 62500,
+          estado: "Activo",
+          empresa: "CCN",
+        },
+        {
+          id: "402-5593143-9",
+          nombre: "Karol Gichola",
+          email: "la-mas-bichota@email.com",
+          registro: "2022-03-13",
+          montoAhorrado: 311528.5,
+          estado: "Activo",
+          empresa: "Victorina",
+        },
+        {
+          id: "402-1587291-4",
+          nombre: "Ramon Tolentino",
+          email: "ramon1544@email.com",
+          registro: "2022-01-23",
+          montoAhorrado: 175500,
+          estado: "Activo",
+          empresa: "Claro Dominicana",
+        },
+        {
+          id: "001-8641576-3",
+          nombre: "Cristian Casablanca",
+          email: "blanco.la.para@johndoe.com",
+          registro: "2022-01-09",
+          montoAhorrado: 237467,
+          estado: "Activo",
+          empresa: "Edeeste",
+        },
+        {
+          id: "001-4486135-4",
+          nombre: "Manuel Turiso",
+          email: "turiso.m@company.com",
+          registro: "2022-02-11",
+          montoAhorrado: 62500,
+          estado: "Activo",
+          empresa: "CCN",
+        },
+      ]);
+    }
+  }, [socios, setSocios]);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -249,7 +245,7 @@ const ListaSocios = () => {
                 <td className="p-2 border border-gray-300">{socio.empresa}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href={`/ListaSocios/${socio.nombre}`}
+                    href={`/ListaSocios/${socio.id}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
                   >
                     <IoEyeSharp className="inline-block" size={25} />
