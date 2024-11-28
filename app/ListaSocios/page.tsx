@@ -141,7 +141,7 @@ const ListaSocios = () => {
       </div>
 
       {/* Controles */}
-      <div className="flex items-center gap-4 p-6 mt-7 bg-white rounded-lg">
+      <div className="flex items-center gap-4 p-6 bg-white rounded-lg">
         {/* Botón Ordenar */}
         <div className="relative" ref={menuRef}>
           <button
@@ -215,7 +215,7 @@ const ListaSocios = () => {
       </div>
 
       {/* Tabla */}
-      <div className="overflow-x-auto p-6 mt-8">
+      <div className="overflow-x-auto p-6 py-1">
         <table className="w-full border-collapse border border-gray-300">
           <thead className="bg-[#00755D] text-white">
             <tr>
