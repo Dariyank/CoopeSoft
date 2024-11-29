@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import NavBar from "./NavBar";
-import { SocioProvider } from './SocioContext/page'; // Ajusta la ruta según tu contexto
+import { SocioProvider } from './Context/socioContext'; // Ajusta la ruta según tu contexto
+import { MovimientoProvider } from './Context/movContext';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,10 +27,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head />
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SocioProvider>
-          <NavBar />
-          <main>
-            {children}
-          </main>
+          <MovimientoProvider>
+            <NavBar />
+            <main>
+              {children}
+            </main>
+          </MovimientoProvider>
         </SocioProvider>
       </body>
     </html>

@@ -1,11 +1,61 @@
 "use client";
+
+import React, { useEffect } from "react";
 import { FaDollarSign } from "react-icons/fa6";
+import { IoEyeSharp } from "react-icons/io5";
 import { useParams } from "next/navigation"; // Para obtener parámetros dinámicos
-import { useSocio } from "@/app/useSocio/page"; // Asegúrate de importar el contexto
+import { useSocio } from "@/app/uses/useSocio"; // Asegúrate de importar el contexto
+import Link from "next/link";
+import { useMovimiento } from "@/app/uses/useMovimiento"; // Importa el hook del contexto
 
 const DetallesSocio = () => {
   const { id } = useParams(); // Extrae el id desde la URL
   const { socios } = useSocio(); // Obtén el contexto de socios
+  
+
+  const { movimientos, setMovimiento } = useMovimiento(); // Obtén los datos del contexto
+   // Inicializa la lista de socios una vez (si está vacía)
+   useEffect(() => {
+    if (movimientos.length === 0) {
+      setMovimiento([
+        {
+          tipo: "Deposito",
+          fechaPago: "17-01-2024",
+          monto: 222222,
+          estado: "completado",
+          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+        },
+        {
+          tipo: "Deposito",
+          fechaPago: "17-01-2024",
+          monto: 432222,
+          estado: "completado",
+          notas: "Bla,,bla,bla,bla,ablalalflflfsf",
+        },
+        {
+          tipo: "Pago intereses Anuales",
+          fechaPago: "17-01-2024",
+          monto: 222222,
+          estado: "completado",
+          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+        },
+        {
+          tipo: "Deposito",
+          fechaPago: "17-01-2024",
+          monto: 222222,
+          estado: "completado",
+          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+        },
+        {
+          tipo: "Deposito",
+          fechaPago: "17-01-2024",
+          monto: 222222,
+          estado: "completado",
+          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+        },
+      ]);
+    }
+  }, [movimientos, setMovimiento]);
 
   // Filtrar el socio según el ID o nombre (según lo que esté pasando como parámetro)
   const socio = socios.find(s => s.id === id);
@@ -98,7 +148,50 @@ const DetallesSocio = () => {
           </div>
         </div>
       </div>
+      
+      {/* Tabla */}
+      <div className="overflow-x-auto p-6 py-1">
+        <table className="w-full border-collapse border border-gray-300">
+          <thead className="bg-[#00755D] text-white">
+            <tr>
+              <th className="p-2 border border-gray-300">Tipo</th>
+              <th className="p-2 border border-gray-300">Fecha Pago</th>
+              <th className="p-2 border border-gray-300">Monto</th>
+              <th className="p-2 border border-gray-300">Estado</th>
+              <th className="p-2 border border-gray-300">Notas</th>
+              <th className="p-2 border border-gray-300">Ver</th>
+            </tr>
+          </thead>
+          <tbody>
+            {movimientos.map((movimientos, index) => (
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+              >
+                <td className="p-2 border border-gray-300">{movimientos.tipo}</td>
+                <td className="p-2 border border-gray-300">{movimientos.fechaPago}</td>
+                <td className="p-2 border border-gray-300">
+                  {movimientos.monto.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                  })}
+                </td>
+                <td className="p-2 border border-gray-300">{movimientos.estado}</td>
+                <td className="p-2 border border-gray-300">{movimientos.notas}</td>
+                <td className="p-2 border border-gray-300 text-center">
+                  <Link
+                    href="/movimientos"
+                    className="text-[#00755D] hover:text-[#e6be31]"
+                  >
+                    <IoEyeSharp className="inline-block" size={25} />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
 
+        </table>
+      </div>
       
     </div>
   );

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SocioContext } from "../SocioContext/page"; // Ajusta la ruta si es necesario
+import { SocioContext } from "../Context/socioContext"; // Ajusta la ruta si es necesario
 
 export const useSocio = () => {
   const context = useContext(SocioContext);

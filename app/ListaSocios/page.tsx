@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
-import { useSocio } from "../useSocio/page"; // Importa el hook del contexto
+import { useSocio } from "../uses/useSocio"; // Importa el hook del contexto
 
 
 const ListaSocios = () => {
