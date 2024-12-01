@@ -4,6 +4,8 @@ import "./globals.css";
 import NavBar from "./NavBar";
 import { SocioProvider } from './Context/socioContext'; // Ajusta la ruta según tu contexto
 import { MovimientoProvider } from './Context/movContext';
+import Link from "next/link";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,6 +32,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <MovimientoProvider>
             <NavBar />
             <main>
+            <Link
+              href="/"
+              className="text-[#00755D] hover:text-[#e6be31] pl-6"
+            >
+              <IoMdArrowRoundBack  className="inline-block" size={25} />
+            </Link>
               {children}
             </main>
           </MovimientoProvider>

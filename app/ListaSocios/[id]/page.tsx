@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaDollarSign } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
+import { BsPencilSquare } from "react-icons/bs";
 import { useParams } from "next/navigation"; // Para obtener parámetros dinámicos
 import { useSocio } from "@/app/uses/useSocio"; // Asegúrate de importar el contexto
 import Link from "next/link";
@@ -11,6 +12,10 @@ import { useMovimiento } from "@/app/uses/useMovimiento"; // Importa el hook del
 const DetallesSocio = () => {
   const { id } = useParams(); // Extrae el id desde la URL
   const { socios } = useSocio(); // Obtén el contexto de socios
+
+  const [search] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   
 
   const { movimientos, setMovimiento } = useMovimiento(); // Obtén los datos del contexto
@@ -53,12 +58,32 @@ const DetallesSocio = () => {
           estado: "completado",
           notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
         },
+        {
+          tipo: "Deposito",
+          fechaPago: "17-01-2024",
+          monto: 222222,
+          estado: "completado",
+          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+        },
       ]);
     }
   }, [movimientos, setMovimiento]);
 
   // Filtrar el socio según el ID o nombre (según lo que esté pasando como parámetro)
   const socio = socios.find(s => s.id === id);
+
+  
+
+  // Filtrar los datos según la búsqueda
+  const filteredMovimientos = movimientos.filter((movimiento) =>
+    Object.values(movimiento).some((value) =>
+      value.toString().toLowerCase().includes(search.toLowerCase())
+    )
+  );
+
+  const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const dataMovimientos = filteredMovimientos.slice(startIndex, startIndex + rowsPerPage);
 
   // Si el socio existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
   const nombreSocio = socio ? socio.nombre : "Socio no encontrado";
@@ -83,9 +108,17 @@ const DetallesSocio = () => {
               
               {/* Información general */}
               <div className="flex-1">
+                <div className="flex justify-between ">
                 <h2 className="font-bold text-[24px] text-[#00755D]">
                   {nombreSocio}
                 </h2>
+                <Link
+                    href="/movimientos"
+                    className="text-[#00755D] hover:text-[#e6be31]"
+                  >
+                    <BsPencilSquare className="inline-block" size={20} />
+                </Link>
+                </div>
                 {socio ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="px-2">
@@ -148,9 +181,23 @@ const DetallesSocio = () => {
           </div>
         </div>
       </div>
-      
+      <div className="flex items-center gap-2 justify-center bg-white rounded-lg">
+        <Link
+          href="/ListaSocios/RegistrarSocio"
+          className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
+        >
+          Solicitar Prestamo
+        </Link>
+        <Link
+          href="/ListaSocios/RegistrarSocio"
+          className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
+        >
+          Registrar Transacción
+        </Link>
+      </div>
       {/* Tabla */}
-      <div className="overflow-x-auto p-6 py-1">
+      <div className="overflow-x-auto p-6 py-4">
+        <div><h2 className="font-bold py-2 text-[#00755D] text-[25px]">Movimientos</h2></div>
         <table className="w-full border-collapse border border-gray-300">
           <thead className="bg-[#00755D] text-white">
             <tr>
@@ -163,7 +210,7 @@ const DetallesSocio = () => {
             </tr>
           </thead>
           <tbody>
-            {movimientos.map((movimientos, index) => (
+            {dataMovimientos.map((movimientos, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
@@ -192,7 +239,58 @@ const DetallesSocio = () => {
 
         </table>
       </div>
-      
+       {/* Paginación */}
+       <div className="flex justify-between items-center p-4">
+          <select
+            value={rowsPerPage}
+            onChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))}
+            className="border border-gray-300 rounded-md p-2"
+          >
+            {[5, 10, 15, 20].map((rows) => (
+              <option key={rows} value={rows}>
+                {rows} por página
+              </option>
+            ))}
+          </select>
+
+          <div>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+            >
+              Inicio
+            </button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+            >
+              Anterior
+            </button>
+            <span>
+              Página {currentPage} de {totalPages}
+            </span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"
+              }`}
+            >
+              Siguiente
+            </button>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(totalPages)}
+              className={`mx-1 px-3 py-1 rounded-md ${
+                currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white "
+              }`}
+            >
+              Fin
+            </button>
+          </div>
+        </div>
     </div>
   );
 };

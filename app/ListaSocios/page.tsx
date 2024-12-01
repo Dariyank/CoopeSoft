@@ -275,14 +275,14 @@ const ListaSocios = () => {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(1)}
-              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
             >
               Inicio
             </button>
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+              className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
             >
               Anterior
             </button>
@@ -293,7 +293,7 @@ const ListaSocios = () => {
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               className={`mx-1 px-3 py-1 rounded-md ${
-                currentPage === totalPages ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white"
+                currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"
               }`}
             >
               Siguiente
@@ -302,7 +302,7 @@ const ListaSocios = () => {
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(totalPages)}
               className={`mx-1 px-3 py-1 rounded-md ${
-                currentPage === totalPages ? "bg-gray-300" : "bg-[#00755D] hover:bg-[#e6be31] text-white "
+                currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white "
               }`}
             >
               Fin
