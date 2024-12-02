@@ -181,20 +181,22 @@ const DetallesSocio = () => {
           </div>
         </div>
       </div>
+
       <div className="flex items-center gap-2 justify-center bg-white rounded-lg">
         <Link
-          href="/ListaSocios/RegistrarSocio"
+          href="/SolicitarPrestamo/"
           className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
         >
           Solicitar Prestamo
         </Link>
         <Link
-          href="/ListaSocios/RegistrarSocio"
+          href="/RegistrarTransaccion/"
           className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
         >
           Registrar Transacción
         </Link>
       </div>
+
       {/* Tabla */}
       <div className="overflow-x-auto p-6 py-4">
         <div><h2 className="font-bold py-2 text-[#00755D] text-[25px]">Movimientos</h2></div>
