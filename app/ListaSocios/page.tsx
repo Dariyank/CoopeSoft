@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useSocio } from "../uses/useSocio";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
-import { useSocio } from "../uses/useSocio"; // Importa el hook del contexto
+import Cookies from 'js-cookie';
 
-
-const ListaSocios = () => {
-  const { socios, setSocios } = useSocio(); // Obtén los datos del contexto
+const ListaSocios: React.FC = () => {
+  
+  const { socios, setSocios } = useSocio()!; // Usamos el contextoconst [search, setSearch] = useState("");
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,112 +17,16 @@ const ListaSocios = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Inicializa la lista de socios una vez (si está vacía)
+  // Simulamos la carga de datos desde un JSON (puedes importar el JSON directamente si es local)
   useEffect(() => {
-    if (socios.length === 0) {
-      setSocios([
-        {
-          id: "402-1587291-4",
-          nombre: "Ramon Tolentino",
-          email: "ramon1544@email.com",
-          telefono:"809-454-3333",
-          registro: "2022-01-23",
-          montoAhorrado: 175500,
-          estado: "Activo",
-          empresa: "Claro Dominicana",
-          genero: "Masculino",
-          edad:32,
-          salario:32000,
-          direccion:"C/ primera, CaeLejos, Santo Domingo, Republica Dominicana",
-                },
-        {
-          id: "001-8641576-3",
-          nombre: "Cristian Casablanca",
-          email: "blanco.la.para@johndoe.com",
-          telefono:"809-454-3333",
-          registro: "2022-01-09",
-          montoAhorrado: 237467,
-          estado: "Activo",
-          empresa: "Edeeste",
-          genero: "Masculino",
-          edad:32,
-          salario:32000,
-          direccion:"C/ primera, CaeLejos, Santo Domingo, Republica Dominicana",
-        },
-        {
-          id: "001-4486135-4",
-          nombre: "Manuel Turiso",
-          email: "turiso.m@company.com",
-          registro: "2022-02-11",
-          montoAhorrado: 62500,
-          estado: "Activo",
-          empresa: "CCN",
-          telefono:"809-454-3333",
-          genero: "Masculino",
-          edad:32,
-          salario:32000,
-          direccion:"C/ primera, CaeLejos, Santo Domingo, Republica Dominicana",
-        },
-        {
-          id: "402-5593143-9",
-          nombre: "Karol Gichola",
-          email: "la-mas-bichota@email.com",
-          telefono:"809-454-3333",
-          registro: "2022-03-13",
-          montoAhorrado: 311528.5,
-          estado: "Activo",
-          empresa: "Victorina",
-          genero: "femenino",
-          edad:32,
-          salario:32000,
-          direccion:"C/ primera, CaeLejos, Santo Domingo, Republica Dominicana",
-        },
-        {
-          id: "402-1587291-4",
-          nombre: "Ramon Tolentino",
-          email: "ramon1544@email.com",
-          telefono:"809-454-3333",
-          registro: "2022-01-23",
-          montoAhorrado: 175500,
-          estado: "Activo",
-          empresa: "Claro Dominicana",
-          genero: "Masculino",
-          edad:32,
-          salario:32000,
-          direccion:"C/ primera, CaeLejos, Santo Domingo, Republica Dominicana",
-        },
-        {
-          id: "001-8641576-3",
-          nombre: "Cristian Casablanca",
-          email: "blanco.la.para@johndoe.com",
-          telefono:"809-454-3333",
-          registro: "2022-01-09",
-          montoAhorrado: 237467,
-          estado: "Activo",
-          empresa: "Edeeste",
-          genero: "Masculino",
-          edad:32,
-          salario:32000,
-          direccion:"C/ primera, CaeLejos, Santo Domingo, Republica Dominicana",
-        
-        },
-        {
-          id: "001-4486135-4",
-          nombre: "Manuel Turiso",
-          email: "turiso.m@company.com",
-          telefono:"809-454-3333",
-          registro: "2022-02-11",
-          montoAhorrado: 62500,
-          estado: "Activo",
-          empresa: "CCN",
-          genero: "Masculino",
-          edad:32,
-          salario:32000,
-          direccion:"C/ primera, CaeLejos, Santo Domingo, Republica Dominicana",
-        },
-      ]);
-    }
-  }, [socios, setSocios]);
+    const fetchData = async () => {
+      const response = await fetch('/socios.json');
+      const data = await response.json();
+      setSocios(data); // Cargamos los datos en el estado
+    };
+    
+    fetchData();
+  }, [setSocios, socios]);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -138,6 +43,11 @@ const ListaSocios = () => {
   // Función para manejar el cambio en el input de búsqueda
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
+  };
+
+   // Función para guardar el id del socio en las cookies
+  const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('socioId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
   };
 
   // Función para ordenar los datos
@@ -283,6 +193,7 @@ const ListaSocios = () => {
                   <Link
                     href={`/ListaSocios/${socio.id}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
+                    onClick={() => handleSaveIdInCookies(socio.id)} // Guardamos el id en cookies al hacer clic
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>

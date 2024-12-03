@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useRepresentante } from "../uses/useRepresentante";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
-import { useRepresentante } from "../uses/useRepresentante";
+import Cookies from 'js-cookie';
 
-const ListaRepresentantes = () => {
+const ListaRepresentantes: React.FC = () => {
 
   const { representantes, setRepresentantes } = useRepresentante(); // Obtén los datos del contexto
   const [search, setSearch] = useState("");
@@ -18,95 +19,14 @@ const ListaRepresentantes = () => {
 
   // Inicializa la lista de representantes una vez (si está vacía)
   useEffect(() => {
-    if (representantes.length === 0) {
-      setRepresentantes([
-        {
-          id: "402-1587291-4",
-          nombre: "Ramon Tolentino",
-          email: "ramon1544@email.com",
-          registro: "2022-01-23",
-          cooperativa: "coop.Herrera",
-          telefono:"809-345-0873",
-          genero: "Masculino",
-          edad:43,
-          salario:45000,
-          direccion:"C/500,esquina volando,Republica Dominica",
-        },
-        {
-          id: "001-8641576-3",
-          nombre: "Cristian Casablanca",
-          email: "blanco.la.para@johndoe.com",
-          registro: "2022-01-09",
-          cooperativa: "coop.Herrera",
-          telefono:"809-345-0873",
-          genero: "Masculino",
-          edad:43,
-          salario:45000,
-          direccion:"C/500,esquina volando,Republica Dominica",
-        },
-        {
-          id: "001-4486135-4",
-          nombre: "Manuel Turiso",
-          email: "turiso.m@company.com",
-          registro: "2022-02-11",
-          cooperativa: "coop.Herrera",
-          telefono:"809-345-0873",
-          genero: "Masculino",
-          edad:43,
-          salario:45000,
-          direccion:"C/500,esquina volando,Republica Dominica",
-        },
-        {
-          id: "402-5593143-9",
-          nombre: "Karol Gichola",
-          email: "la-mas-bichota@email.com",
-          registro: "2022-03-13",
-          cooperativa: "coop.Herrera",
-          telefono:"809-345-0873",
-          genero: "Masculino",
-          edad:43,
-          salario:45000,
-          direccion:"C/500,esquina volando,Republica Dominica",
-        },
-        {
-          id: "402-1587291-4",
-          nombre: "Ramon Tolentino",
-          email: "ramon1544@email.com",
-          registro: "2022-01-23",
-          cooperativa: "coop.Herrera",
-          telefono:"809-345-0873",
-          genero: "Masculino",
-          edad:43,
-          salario:45000,
-          direccion:"C/500,esquina volando,Republica Dominica",
-        },
-        {
-          id: "001-8641576-3",
-          nombre: "Cristian Casablanca",
-          email: "blanco.la.para@johndoe.com",
-          registro: "2022-01-09",
-          cooperativa: "coop.Herrera",
-          telefono:"809-345-0873",
-          genero: "Masculino",
-          edad:43,
-          salario:45000,
-          direccion:"C/500,esquina volando,Republica Dominica",
-        },
-        {
-          id: "001-4486135-4",
-          nombre: "Manuel Turiso",
-          email: "turiso.m@company.com",
-          registro: "2022-02-11",
-          cooperativa: "coop.Herrera",
-          telefono:"809-345-0873",
-          genero: "Masculino",
-          edad:43,
-          salario:45000,
-          direccion:"C/500,esquina volando,Republica Dominica",
-        },
-      ]);
-    }
-  }, [representantes, setRepresentantes]);
+    const fetchData = async () => {
+      const response = await fetch('/representantes.json');
+      const data = await response.json();
+      setRepresentantes(data); // Cargamos los datos en el estado
+    };
+    
+    fetchData();
+  }, [setRepresentantes, representantes]);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -125,6 +45,10 @@ const ListaRepresentantes = () => {
     setSearch(e.target.value);
   };
 
+   // Función para guardar el id del representante en las cookies
+   const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('representanteId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
 
   // Función para ordenar los datos
   const handleSort = (criteria: "asc" | "desc" | "id") => {
@@ -132,7 +56,8 @@ const ListaRepresentantes = () => {
       if (criteria === "id") return a.id.localeCompare(b.id);
       if (criteria === "asc") return a.cooperativa.localeCompare(b.cooperativa);
       return b.cooperativa.localeCompare(a.cooperativa);
-  });
+    });
+
     setSortOrder(criteria); // Actualiza el estado de `sortOrder`
     setRepresentantes(sorted);
   };
@@ -257,6 +182,7 @@ const ListaRepresentantes = () => {
                   <Link
                     href={`/ListaRepresentantes/${representante.id}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
+                    onClick={() => handleSaveIdInCookies(representante.id)} 
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>
@@ -321,7 +247,7 @@ const ListaRepresentantes = () => {
         </div>
           
     </div>
-  )
-}
+  );
+};
 
-export default ListaRepresentantes
+export default ListaRepresentantes;

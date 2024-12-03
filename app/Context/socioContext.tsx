@@ -4,7 +4,7 @@ import React, { createContext, useState, PropsWithChildren, Dispatch, SetStateAc
 
 // Define la interfaz para los socios
 
-interface Socio {
+export interface Socio {
   id: string;
   nombre: string;
   email: string;
