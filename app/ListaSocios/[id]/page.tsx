@@ -29,6 +29,7 @@ const DetallesSocio = () => {
           monto: 222222,
           estado: "completado",
           notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+          cliente:"fulano de tal",
         },
         {
           tipo: "Deposito",
@@ -36,6 +37,7 @@ const DetallesSocio = () => {
           monto: 432222,
           estado: "completado",
           notas: "Bla,,bla,bla,bla,ablalalflflfsf",
+          cliente:"fulano de tal",
         },
         {
           tipo: "Pago intereses Anuales",
@@ -43,6 +45,7 @@ const DetallesSocio = () => {
           monto: 222222,
           estado: "completado",
           notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+          cliente:"fulano de tal",
         },
         {
           tipo: "Deposito",
@@ -50,6 +53,7 @@ const DetallesSocio = () => {
           monto: 222222,
           estado: "completado",
           notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+          cliente:"fulano de tal",
         },
         {
           tipo: "Deposito",
@@ -57,6 +61,7 @@ const DetallesSocio = () => {
           monto: 222222,
           estado: "completado",
           notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+          cliente:"fulano de tal",
         },
         {
           tipo: "Deposito",
@@ -64,6 +69,7 @@ const DetallesSocio = () => {
           monto: 222222,
           estado: "completado",
           notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
+          cliente:"fulano de tal",
         },
       ]);
     }
@@ -124,16 +130,16 @@ const DetallesSocio = () => {
                     <div className="px-2">
                       <p className="text-sm"><strong>Cédula: </strong>{cedula}</p>
                       <p className="text-sm"><strong>Email: </strong>{socio.email}</p>
-                      <p className="text-sm font-bold">Teléfono:</p>
+                      <p className="text-sm"><strong>Teléfono: </strong>{socio.telefono}</p>
                     </div>
                     <div className="px-2">
-                      <p className="text-sm font-bold">Género:</p>
-                      <p className="text-sm font-bold">Edad:</p>
+                      <p className="text-sm"><strong>Género: </strong>{socio.genero} </p>
+                      <p className="text-sm"><strong>Edad: </strong>{socio.edad} </p>
                       <p className="text-sm"><strong>Compañía: </strong>{socio.empresa}</p>
                     </div>
                     <div className="px-2">
-                      <p className="text-sm font-bold">Salario:</p>
-                      <p className="text-sm font-bold">Dirección:</p>
+                      <p className="text-sm"><strong>Salario: </strong>{socio.salario}</p>
+                      <p className="text-sm"><strong>Dirección: </strong>{socio.direccion}</p>
                     </div>
                   </div>
                 ) : (

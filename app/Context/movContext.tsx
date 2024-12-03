@@ -10,6 +10,7 @@ interface Movimiento {
   monto: number;
   estado: string;
   notas: string;
+  cliente:string;
 }
 
 
