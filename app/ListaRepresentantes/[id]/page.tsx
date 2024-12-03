@@ -1,97 +1,69 @@
 "use client";
 
 import React, { useState, useEffect} from "react";
+import { Representante } from '../../Context/representanteContext';
+import Cookies from "js-cookie";
 import { BsPencilSquare } from "react-icons/bs";
 import { IoEyeSharp } from "react-icons/io5";
+
 import Link from "next/link";
-import { useRepresentante } from "@/app/uses/useRepresentante"; // Asegúrate de importar el contexto
-import { useParams } from "next/navigation"; // Para obtener parámetros dinámicos
 import { useMovimiento } from "@/app/uses/useMovimiento"; // Importa el hook del contexto
 
 const DetallesRepresentante = () => {
-    const { id } = useParams(); // Extrae el id desde la URL
-    const { representantes } = useRepresentante(); // Obtén el contexto de Representantes
+  const [representante, setRepresentante] = useState<Representante | null>(null);
+  const [representantes, setRepresentantes] = useState<Representante[]>([]); // Estado para la lista completa de socios
+  const [search] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const [search] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { movimientos } = useMovimiento(); // Obtén los datos del contexto
 
-    const { movimientos, setMovimiento } = useMovimiento(); // Obtén los datos del contexto
+  // Inicializa la lista de socios una vez (si está vacía)
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/socios.json');
+        const data = await response.json();
+        setRepresentantes(data); // Cargar los datos en el estado
+      } catch (error) {
+        console.error("Error al cargar los datos:", error);
+      }
+    };
 
-    // Inicializa la lista de socios una vez (si está vacía)
-   useEffect(() => {
-    if (movimientos.length === 0) {
-      setMovimiento([
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 432222,
-          estado: "completado",
-          notas: "Bla,,bla,bla,bla,ablalalflflfsf",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Pago intereses Anuales",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-      ]);
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const representanteId = Cookies.get("representanteId"); // Leer el ID desde las cookies
+
+    if (representanteId) {
+      const foundSocio = representantes.find((s: Representante) => s.id === representanteId);
+      if (foundSocio) {
+        setRepresentante(foundSocio);
+      } else {
+        setRepresentante(null);
+      }
     }
-  }, [movimientos, setMovimiento]);
+  }, [representantes]);
 
 
-    // Filtrar el representante según el ID o nombre (según lo que esté pasando como parámetro)
-    const representante = representantes.find(s => s.id === id);
+  // // Filtrar el representante según el ID o nombre (según lo que esté pasando como parámetro)
+  // const representante = representantes.find(s => s.id === id);
 
-    // Filtrar los datos según la búsqueda
-    const filteredMovimientos = movimientos.filter((movimiento) =>
-        Object.values(movimiento).some((value) =>
-        value.toString().toLowerCase().includes(search.toLowerCase())
-        )
-    );
+  // Filtrar los datos según la búsqueda
+  const filteredMovimientos = movimientos.filter((movimiento) =>
+      Object.values(movimiento).some((value) =>
+      value.toString().toLowerCase().includes(search.toLowerCase())
+      )
+  );
 
-    const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const dataMovimientos = filteredMovimientos.slice(startIndex, startIndex + rowsPerPage);
+  const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const dataMovimientos = filteredMovimientos.slice(startIndex, startIndex + rowsPerPage);
 
-    // Si el representante existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
-    const nombreRepresentante = representante ? representante.nombre : "Representante no encontrado";
-    const cedula = representante ? representante.id : "Representante no encontrado";
+  // Si el representante existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
+  const nombreRepresentante = representante ? representante.nombre : "Representante no encontrado";
+  const cedula = representante ? representante.id : "Representante no encontrado";
     
   return (
     <div>

@@ -1,22 +1,49 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Socio } from '../../Context/socioContext';
+import Cookies from "js-cookie";
 import { FaDollarSign } from "react-icons/fa6";
 import { IoEyeSharp } from "react-icons/io5";
 import { BsPencilSquare } from "react-icons/bs";
-import { useParams } from "next/navigation"; // Para obtener parámetros dinámicos
-import { useSocio } from "@/app/uses/useSocio"; // Asegúrate de importar el contexto
+
 import Link from "next/link";
 import { useMovimiento } from "@/app/uses/useMovimiento"; // Importa el hook del contexto
 
 const DetallesSocio = () => {
-  const { id } = useParams(); // Extrae el id desde la URL
-  const { socios } = useSocio(); // Obtén el contexto de socios
-
+  const [socio, setSocio] = useState<Socio | null>(null);
+  const [socios, setSocios] = useState<Socio[]>([]); // Estado para la lista completa de socios
   const [search] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  // useEffect para cargar los datos del archivo JSON
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/socios.json');
+        const data = await response.json();
+        setSocios(data); // Cargar los datos en el estado
+      } catch (error) {
+        console.error("Error al cargar los datos:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   
+  useEffect(() => {
+    const socioId = Cookies.get("socioId"); // Leer el ID desde las cookies
+
+    if (socioId) {
+      const foundSocio = socios.find((s: Socio) => s.id === socioId);
+      if (foundSocio) {
+        setSocio(foundSocio);
+      } else {
+        setSocio(null);
+      }
+    }
+  }, [socios]);
 
   const { movimientos, setMovimiento } = useMovimiento(); // Obtén los datos del contexto
    // Inicializa la lista de socios una vez (si está vacía)
@@ -34,7 +61,7 @@ const DetallesSocio = () => {
         {
           tipo: "Deposito",
           fechaPago: "17-01-2024",
-          monto: 432222,
+          monto: 452222,
           estado: "completado",
           notas: "Bla,,bla,bla,bla,ablalalflflfsf",
           cliente:"fulano de tal",
@@ -75,11 +102,6 @@ const DetallesSocio = () => {
     }
   }, [movimientos, setMovimiento]);
 
-  // Filtrar el socio según el ID o nombre (según lo que esté pasando como parámetro)
-  const socio = socios.find(s => s.id === id);
-
-  
-
   // Filtrar los datos según la búsqueda
   const filteredMovimientos = movimientos.filter((movimiento) =>
     Object.values(movimiento).some((value) =>
@@ -94,6 +116,7 @@ const DetallesSocio = () => {
   // Si el socio existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
   const nombreSocio = socio ? socio.nombre : "Socio no encontrado";
   const cedula = socio ? socio.id : "Socio no encontrado";
+  if (!socio) return <div>Cargando...</div>;
   return (
     <div>
       {/* Título */}

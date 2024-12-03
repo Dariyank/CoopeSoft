@@ -4,17 +4,17 @@ import React, { createContext, useState, PropsWithChildren, Dispatch, SetStateAc
 
 // Define la interfaz para los representantes
 
-interface Representante {
+export interface Representante {
   id: string;
   nombre: string;
   email: string;
-  telefono:string;
-  genero: string,
-  edad:number,
-  salario:number,
-  direccion:string,
   registro: string;
   cooperativa: string;
+  telefono:string;
+  genero: string;
+  edad:number;
+  salario:number;
+  direccion:string;
 }
 
 
