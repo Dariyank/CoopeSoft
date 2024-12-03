@@ -8,6 +8,11 @@ interface Socio {
   id: string;
   nombre: string;
   email: string;
+  telefono:string;
+  genero: string,
+  edad:number,
+  salario:number,
+  direccion:string,
   registro: string;
   montoAhorrado: number;
   estado: string;

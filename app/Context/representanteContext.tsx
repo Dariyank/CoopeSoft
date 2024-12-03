@@ -8,6 +8,11 @@ interface Representante {
   id: string;
   nombre: string;
   email: string;
+  telefono:string;
+  genero: string,
+  edad:number,
+  salario:number,
+  direccion:string,
   registro: string;
   cooperativa: string;
 }

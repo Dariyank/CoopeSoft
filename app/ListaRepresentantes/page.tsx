@@ -16,7 +16,7 @@ const ListaRepresentantes = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Inicializa la lista de socios una vez (si está vacía)
+  // Inicializa la lista de representantes una vez (si está vacía)
   useEffect(() => {
     if (representantes.length === 0) {
       setRepresentantes([
@@ -25,49 +25,84 @@ const ListaRepresentantes = () => {
           nombre: "Ramon Tolentino",
           email: "ramon1544@email.com",
           registro: "2022-01-23",
-          cooperativa: "Claro Dominicana",
+          cooperativa: "coop.Herrera",
+          telefono:"809-345-0873",
+          genero: "Masculino",
+          edad:43,
+          salario:45000,
+          direccion:"C/500,esquina volando,Republica Dominica",
         },
         {
           id: "001-8641576-3",
           nombre: "Cristian Casablanca",
           email: "blanco.la.para@johndoe.com",
           registro: "2022-01-09",
-          cooperativa: "Edeeste",
+          cooperativa: "coop.Herrera",
+          telefono:"809-345-0873",
+          genero: "Masculino",
+          edad:43,
+          salario:45000,
+          direccion:"C/500,esquina volando,Republica Dominica",
         },
         {
           id: "001-4486135-4",
           nombre: "Manuel Turiso",
           email: "turiso.m@company.com",
           registro: "2022-02-11",
-          cooperativa: "CCN",
+          cooperativa: "coop.Herrera",
+          telefono:"809-345-0873",
+          genero: "Masculino",
+          edad:43,
+          salario:45000,
+          direccion:"C/500,esquina volando,Republica Dominica",
         },
         {
           id: "402-5593143-9",
           nombre: "Karol Gichola",
           email: "la-mas-bichota@email.com",
           registro: "2022-03-13",
-          cooperativa: "Victorina",
+          cooperativa: "coop.Herrera",
+          telefono:"809-345-0873",
+          genero: "Masculino",
+          edad:43,
+          salario:45000,
+          direccion:"C/500,esquina volando,Republica Dominica",
         },
         {
           id: "402-1587291-4",
           nombre: "Ramon Tolentino",
           email: "ramon1544@email.com",
           registro: "2022-01-23",
-          cooperativa: "Claro Dominicana",
+          cooperativa: "coop.Herrera",
+          telefono:"809-345-0873",
+          genero: "Masculino",
+          edad:43,
+          salario:45000,
+          direccion:"C/500,esquina volando,Republica Dominica",
         },
         {
           id: "001-8641576-3",
           nombre: "Cristian Casablanca",
           email: "blanco.la.para@johndoe.com",
           registro: "2022-01-09",
-          cooperativa: "Edeeste",
+          cooperativa: "coop.Herrera",
+          telefono:"809-345-0873",
+          genero: "Masculino",
+          edad:43,
+          salario:45000,
+          direccion:"C/500,esquina volando,Republica Dominica",
         },
         {
           id: "001-4486135-4",
           nombre: "Manuel Turiso",
           email: "turiso.m@company.com",
           registro: "2022-02-11",
-          cooperativa: "CCN",
+          cooperativa: "coop.Herrera",
+          telefono:"809-345-0873",
+          genero: "Masculino",
+          edad:43,
+          salario:45000,
+          direccion:"C/500,esquina volando,Republica Dominica",
         },
       ]);
     }
@@ -189,7 +224,7 @@ const ListaRepresentantes = () => {
 
         {/* Botón Registrar Representante */}
         <Link
-          href=""
+          href="/ListaRepresentantes/RegistrarRepresentante"
           className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
         >
           Registrar Representante
@@ -205,7 +240,6 @@ const ListaRepresentantes = () => {
               <th className="p-2 border border-gray-300">Nombre</th>
               <th className="p-2 border border-gray-300">Email</th>
               <th className="p-2 border border-gray-300">Registro</th>
-              <th className="p-2 border border-gray-300">Cooperativa</th>
               <th className="p-2 border border-gray-300">Acciones</th>
             </tr>
           </thead>
@@ -219,10 +253,9 @@ const ListaRepresentantes = () => {
                 <td className="p-2 border border-gray-300">{representante.nombre}</td>
                 <td className="p-2 border border-gray-300">{representante.email}</td>
                 <td className="p-2 border border-gray-300">{representante.registro}</td>
-                <td className="p-2 border border-gray-300">{representante.cooperativa}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href={`/ListaRepresentante/${representante.id}`}
+                    href={`/ListaRepresentantes/${representante.id}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
                   >
                     <IoEyeSharp className="inline-block" size={25} />
