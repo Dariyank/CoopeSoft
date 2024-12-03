@@ -254,7 +254,6 @@ const ListaSocios = () => {
               </tr>
             ))}
           </tbody>
-
         </table>
       </div>
        {/* Paginación */}

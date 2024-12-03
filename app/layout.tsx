@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "./NavBar";
 import { SocioProvider } from './Context/socioContext'; // Ajusta la ruta según tu contexto
 import { MovimientoProvider } from './Context/movContext';
+import { RepresentanteProvider } from './Context/representanteContext';
 import Link from "next/link";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
@@ -30,16 +31,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SocioProvider>
           <MovimientoProvider>
-            <NavBar />
-            <main>
-            <Link
-              href="/"
-              className="text-[#00755D] hover:text-[#e6be31] pl-6"
-            >
-              <IoMdArrowRoundBack  className="inline-block" size={25} />
-            </Link>
-              {children}
-            </main>
+            <RepresentanteProvider>
+              <NavBar />
+              <main>
+              <Link
+                href="/"
+                className="text-[#00755D] hover:text-[#e6be31] pl-6"
+              >
+                <IoMdArrowRoundBack  className="inline-block" size={25} />
+              </Link>
+                {children}
+              </main>
+            </RepresentanteProvider>
           </MovimientoProvider>
         </SocioProvider>
       </body>
