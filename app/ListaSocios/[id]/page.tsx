@@ -57,6 +57,11 @@ const DetallesSocio = () => {
     fetchData();
   }, [setMovimientos, movimientos]);
 
+   // Función para guardar el id del socio en las cookies
+   const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('movimientoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
+
   // Filtrar los datos según la búsqueda
   const filteredMovimientos = movimientos.filter((movimiento) =>
     Object.values(movimiento).some((value) =>
@@ -196,25 +201,26 @@ const DetallesSocio = () => {
             </tr>
           </thead>
           <tbody>
-            {dataMovimientos.map((movimientos, index) => (
+            {dataMovimientos.map((movimiento, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
               >
-                <td className="p-2 border border-gray-300">{movimientos.tipoMovimiento}</td>
-                <td className="p-2 border border-gray-300">{movimientos.fechaRealizada}</td>
+                <td className="p-2 border border-gray-300">{movimiento.tipoMovimiento}</td>
+                <td className="p-2 border border-gray-300">{movimiento.fechaRealizada}</td>
                 <td className="p-2 border border-gray-300">
-                  {movimientos.monto.toLocaleString("en-US", {
+                  {movimiento.monto.toLocaleString("en-US", {
                     style: "currency",
                     currency: "USD",
                   })}
                 </td>
-                <td className="p-2 border border-gray-300">{movimientos.estado}</td>
-                <td className="p-2 border border-gray-300">{movimientos.descripcion}</td>
+                <td className="p-2 border border-gray-300">{movimiento.estado}</td>
+                <td className="p-2 border border-gray-300">{movimiento.descripcion}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href="/movimientos"
+                    href={`../../ListaMovimientos/${movimiento.id}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
+                    onClick={() => handleSaveIdInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>

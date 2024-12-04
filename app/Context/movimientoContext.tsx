@@ -11,7 +11,7 @@ export interface Movimientos {
   representante: string;
   fechaRealizada: string;
   monto: number;
-  estado:GLboolean;
+  estado:boolean;
   descripcion:string;
 }
 
