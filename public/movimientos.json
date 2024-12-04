@@ -1,69 +1,68 @@
 [
-    {
+  {
       "id": "402-5593143-9",
-      "tipoMovimiento":"Deposito",
+      "tipoMovimiento": "Deposito",
       "nombre": "Karol Gichola",
       "email": "la-mas-bichota@email.com",
-      "representante":"fulanito de tal",
-      "fechaRealizada":"22-12-2024",
-      "monto":85000,
-      "estado":1,
-      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    },
-    {
-      "id": "402-5593143-9",
-      "tipoMovimiento":"Deposito",
+      "representante": "Fulanito de Tal",
+      "fechaRealizada": "22-12-2024",
+      "monto": 85000,
+      "estado": 1,
+      "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+  },
+  {
+      "id": "402-5593144-0",
+      "tipoMovimiento": "PagoPrestamo",
+      "nombre": "Cristian Casablanca",
+      "email": "cristian.casablanca@email.com",
+      "representante": "Juan Pérez",
+      "fechaRealizada": "23-12-2024",
+      "monto": 15000,
+      "estado": 1,
+      "descripcion": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  },
+  {
+      "id": "402-5593145-1",
+      "tipoMovimiento": "Deposito",
+      "nombre": "Manuel Turiso",
+      "email": "manuel.turiso@email.com",
+      "representante": "Ana Rodríguez",
+      "fechaRealizada": "24-12-2024",
+      "monto": 25000,
+      "estado": 0,
+      "descripcion": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium."
+  },
+  {
+      "id": "402-5593146-2",
+      "tipoMovimiento": "PagoPrestamo",
       "nombre": "Karol Gichola",
-      "email": "la-mas-bichota@email.com",
-      "representante":"fulanito de tal",
-      "fechaRealizada":"22-12-2024",
-      "monto":85000,
-      "estado":0,
-      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    },
-    {
-      "id": "402-5593143-9",
-      "tipoMovimiento":"Deposito",
-      "nombre": "Karol Gichola",
-      "email": "la-mas-bichota@email.com",
-      "representante":"fulanito de tal",
-      "fechaRealizada":"22-12-2024",
-      "monto":85000,
-      "estado":1,
-      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    },
-    {
-      "id": "402-5593143-9",
-      "tipoMovimiento":"Deposito",
-      "nombre": "Karol Gichola",
-      "email": "la-mas-bichota@email.com",
-      "representante":"fulanito de tal",
-      "fechaRealizada":"22-12-2024",
-      "monto":85000,
-      "estado":0,
-      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    },
-    {
-      "id": "402-5593143-9",
-      "tipoMovimiento":"Deposito",
-      "nombre": "destini Gichola",
-      "email": "la-mas-bichota@email.com",
-      "representante":"fulanito de tal",
-      "fechaRealizada":"22-12-2024",
-      "monto":85000,
-      "estado":1,
-      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    },
-    {
-      "id": "402-5593143-9",
-      "tipoMovimiento":"Deposito",
-      "nombre": "Kar Gichola",
-      "email": "la-mas-bichota@email.com",
-      "representante":"fulanito de tal",
-      "fechaRealizada":"22-12-2024",
-      "monto":85000,
-      "estado":0,
-      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-    }
+      "email": "karol.gichola@email.com",
+      "representante": "Carlos Martínez",
+      "fechaRealizada": "25-12-2024",
+      "monto": 20000,
+      "estado": 1,
+      "descripcion": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  },
+  {
+      "id": "402-5593147-3",
+      "tipoMovimiento": "Deposito",
+      "nombre": "José Hernández",
+      "email": "jose.hernandez@email.com",
+      "representante": "Pedro González",
+      "fechaRealizada": "26-12-2024",
+      "monto": 10000,
+      "estado": 0,
+      "descripcion": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti."
+  },
+  {
+      "id": "402-5593148-4",
+      "tipoMovimiento": "PagoPrestamo",
+      "nombre": "Laura Peña",
+      "email": "laura.pena@email.com",
+      "representante": "Esteban López",
+      "fechaRealizada": "27-12-2024",
+      "monto": 50000,
+      "estado": 1,
+      "descripcion": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+  }
 ]
-    

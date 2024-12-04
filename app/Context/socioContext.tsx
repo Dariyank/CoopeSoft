@@ -19,7 +19,6 @@ export interface Socio {
   empresa: string;
 }
 
-
 // Define la interfaz para el contexto
 interface SocioContextType {
   socios: Socio[];

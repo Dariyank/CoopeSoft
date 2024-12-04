@@ -1,5 +1,7 @@
 "use client";
 
+import { obtenerSocios } from '@/app/actions'
+
 import React, { useState, useEffect, useRef } from "react";
 import { useSocio } from "../uses/useSocio";
 import { HiAdjustments } from "react-icons/hi";
@@ -9,13 +11,14 @@ import Cookies from 'js-cookie';
 
 const ListaSocios: React.FC = () => {
   
-  const { socios, setSocios } = useSocio()!; // Usamos el contextoconst [search, setSearch] = useState("");
+  const {socios, setSocios} = useSocio(); // Usamos el contextoconst [search, setSearch] = useState("");
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const menuRef = useRef<HTMLDivElement>(null);
+  const socioId = Cookies.get("socioId");
 
   // Simulamos la carga de datos desde un JSON (puedes importar el JSON directamente si es local)
   useEffect(() => {
@@ -24,9 +27,12 @@ const ListaSocios: React.FC = () => {
       const data = await response.json();
       setSocios(data); // Cargamos los datos en el estado
     };
-    
     fetchData();
   }, [setSocios, socios]);
+
+  useEffect(() => {
+    obtenerSocios();
+  }, []);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -48,6 +54,10 @@ const ListaSocios: React.FC = () => {
    // Función para guardar el id del socio en las cookies
   const handleSaveIdInCookies = (id: string) => {
     Cookies.set('socioId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
+
+  const removeIdCookies = () => {
+    Cookies.remove('socioId');
   };
 
   // Función para ordenar los datos
@@ -151,6 +161,7 @@ const ListaSocios: React.FC = () => {
         <Link
           href="/ListaSocios/RegistrarSocio"
           className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
+          onClick={() => socioId != undefined ? removeIdCookies() : null} // Eliminados el id en cookies al hacer clic
         >
           Registrar Socio
         </Link>
