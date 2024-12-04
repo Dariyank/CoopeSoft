@@ -12,6 +12,7 @@ import { MovimientosProvider } from './Context/movimientoContext';
 import ProvidersWrapper from './Context/ProviderWrapper';
 // import Link from "next/link";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import Head from "next/head";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -45,11 +46,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ProvidersWrapper providers={providers}>
           <NavBar />
+          <Head>
+            <title>{"Coopesoft"}</title>
+            <meta name="description" content={"Coopesoft"} />
+          </Head>
           <main>
-            <head>
-              <title>{"Coopesoft"}</title>
-              <meta name="description" content={"Coopesoft"} />
-            </head>
             {!isHomePage && ( // Solo renderiza el botón si no estamos en la página principal
               <button
                 onClick={() => window.history.back()}

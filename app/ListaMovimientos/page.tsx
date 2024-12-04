@@ -3,6 +3,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useMovimientos } from "../uses/useMovimientos";
 import { HiAdjustments } from "react-icons/hi";
+import { IoEyeSharp } from "react-icons/io5";
+import Link from "next/link";
+import Cookies from 'js-cookie';
 
 const ListaMovimientos: React.FC =  () => {
 
@@ -10,7 +13,20 @@ const ListaMovimientos: React.FC =  () => {
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const menuRef = useRef<HTMLDivElement>(null);
+
+   // Inicializa la lista de prestamos una vez (si está vacía)
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/movimientos.json');
+      const data = await response.json();
+      setMovimientos(data); // Cargamos los datos en el estado
+    };
+    
+    fetchData();
+  }, [setMovimientos, movimientos]);
 
 
   // Cerrar el menú si se hace clic fuera de él
@@ -30,6 +46,12 @@ const ListaMovimientos: React.FC =  () => {
     setSearch(e.target.value);
   };
 
+  // Función para guardar el id del movimiento en las cookies
+  const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('movimientoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
+
+
   // Función para ordenar los datos
   const handleSort = (criteria: "asc" | "desc" | "id") => {
     const sorted = [...movimientos].sort((a, b) => {
@@ -43,11 +65,15 @@ const ListaMovimientos: React.FC =  () => {
   };
 
   // Filtrar los datos según la búsqueda
-  // const filteredPrestamos = prestamos.filter((prestamo) =>
-  //   Object.values(prestamo).some((value) =>
-  //     value.toString().toLowerCase().includes(search.toLowerCase())
-  //   )
-  // );
+  const filteredMovimientos = movimientos.filter((movimiento) =>
+    Object.values(movimiento).some((value) =>
+      value.toString().toLowerCase().includes(search.toLowerCase())
+    )
+  );
+
+  const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const dataMovimiento = filteredMovimientos.slice(startIndex, startIndex + rowsPerPage);
 
 
   // Toggle menú de ordenamiento
@@ -122,6 +148,100 @@ const ListaMovimientos: React.FC =  () => {
             onChange={handleSearchChange}
             className="pl-10 pr-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:ring-gray-300"
           />
+        </div>
+      </div>
+
+      {/* Tabla */}
+      <div className="overflow-x-auto p-6 py-1">
+        <table className="w-full border-collapse border border-gray-300">
+          <thead className="bg-[#00755D] text-white">
+            <tr>
+              <th className="p-2 border border-gray-300">ID</th>
+              <th className="p-2 border border-gray-300">Tipo de Movimiento</th>
+              <th className="p-2 border border-gray-300">Nombre</th>
+              <th className="p-2 border border-gray-300">Representante</th>
+              <th className="p-2 border border-gray-300">Fecha Realizada</th>
+              <th className="p-2 border border-gray-300">Monto</th>
+              <th className="p-2 border border-gray-300">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataMovimiento.map((movimiento, index) => (
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+              >
+                <td className="p-2 border border-gray-300">{movimiento.id}</td>
+                <td className="p-2 border border-gray-300">{movimiento.tipoMovimiento}</td>
+                <td className="p-2 border border-gray-300">{movimiento.nombre}</td>
+                <td className="p-2 border border-gray-300">{movimiento.representante}</td>
+                <td className="p-2 border border-gray-300">{movimiento.fechaRealizada}</td>
+                <td className="p-2 border border-gray-300">{movimiento.monto}</td>
+                <td className="p-2 border border-gray-300 text-center">
+                  <Link
+                    href={`/ListaMovimientos/${movimiento.id}`}
+                    className="text-[#00755D] hover:text-[#e6be31]"
+                    onClick={() => handleSaveIdInCookies(movimiento.id)} 
+                  >
+                    <IoEyeSharp className="inline-block" size={25} />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Paginación */}
+      <div className="flex justify-between items-center p-4">
+        <select
+          value={rowsPerPage}
+          onChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))}
+          className="border border-gray-300 rounded-md p-2"
+        >
+          {[5, 10, 15, 20].map((rows) => (
+            <option key={rows} value={rows}>
+              {rows} por página
+            </option>
+          ))}
+        </select>
+
+        <div>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(1)}
+            className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+          >
+            Inicio
+          </button>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+          >
+            Anterior
+          </button>
+          <span>
+            Página {currentPage} de {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            className={`mx-1 px-3 py-1 rounded-md ${
+              currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"
+            }`}
+          >
+            Siguiente
+          </button>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(totalPages)}
+            className={`mx-1 px-3 py-1 rounded-md ${
+              currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white "
+            }`}
+          >
+            Fin
+          </button>
         </div>
       </div>
       

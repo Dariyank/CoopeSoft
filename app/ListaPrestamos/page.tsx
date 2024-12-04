@@ -3,6 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { usePrestamo } from "../uses/usePrestamo";
 import { HiAdjustments } from "react-icons/hi";
+import { IoEyeSharp } from "react-icons/io5";
+import Link from "next/link";
+import Cookies from 'js-cookie';
+
 
 const ListaPrestamos: React.FC =  () => {
 
@@ -10,7 +14,20 @@ const ListaPrestamos: React.FC =  () => {
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const menuRef = useRef<HTMLDivElement>(null);
+
+   // Inicializa la lista de prestamos una vez (si está vacía)
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/prestamos.json');
+      const data = await response.json();
+      setPrestamos(data); // Cargamos los datos en el estado
+    };
+    
+    fetchData();
+  }, [setPrestamos, prestamos]);
 
 
   // Cerrar el menú si se hace clic fuera de él
@@ -30,6 +47,11 @@ const ListaPrestamos: React.FC =  () => {
     setSearch(e.target.value);
   };
 
+  // Función para guardar el id del representante en las cookies
+  const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('prestamoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
+
   // Función para ordenar los datos
   const handleSort = (criteria: "asc" | "desc" | "id") => {
     const sorted = [...prestamos].sort((a, b) => {
@@ -43,11 +65,15 @@ const ListaPrestamos: React.FC =  () => {
   };
 
   // Filtrar los datos según la búsqueda
-  // const filteredPrestamos = prestamos.filter((prestamo) =>
-  //   Object.values(prestamo).some((value) =>
-  //     value.toString().toLowerCase().includes(search.toLowerCase())
-  //   )
-  // );
+  const filteredPrestamos = prestamos.filter((prestamo) =>
+    Object.values(prestamo).some((value) =>
+      value.toString().toLowerCase().includes(search.toLowerCase())
+    )
+  );
+
+  const totalPages = Math.ceil(filteredPrestamos.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const dataPrestamo = filteredPrestamos.slice(startIndex, startIndex + rowsPerPage);
 
 
   // Toggle menú de ordenamiento
@@ -122,6 +148,102 @@ const ListaPrestamos: React.FC =  () => {
             onChange={handleSearchChange}
             className="pl-10 pr-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring focus:ring-gray-300"
           />
+        </div>
+      </div>
+
+       {/* Tabla */}
+       <div className="overflow-x-auto p-6 py-1">
+        <table className="w-full border-collapse border border-gray-300">
+          <thead className="bg-[#00755D] text-white">
+            <tr>
+              <th className="p-2 border border-gray-300">ID</th>
+              <th className="p-2 border border-gray-300">Nombre</th>
+              <th className="p-2 border border-gray-300">Email</th>
+              <th className="p-2 border border-gray-300">Dia Solicitud</th>
+              <th className="p-2 border border-gray-300">Monto Prestado</th>
+              <th className="p-2 border border-gray-300">Estado</th>
+              <th className="p-2 border border-gray-300">Tasa Interes</th>
+              <th className="p-2 border border-gray-300">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataPrestamo.map((prestamo, index) => (
+              <tr
+                key={index}
+                className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+              >
+                <td className="p-2 border border-gray-300">{prestamo.id}</td>
+                <td className="p-2 border border-gray-300">{prestamo.nombre}</td>
+                <td className="p-2 border border-gray-300">{prestamo.email}</td>
+                <td className="p-2 border border-gray-300">{prestamo.diaSolicitud}</td>
+                <td className="p-2 border border-gray-300">{prestamo.montoPrestado}</td>
+                <td className="p-2 border border-gray-300">{prestamo.estado}</td>
+                <td className="p-2 border border-gray-300">{prestamo.tasaInteres}</td>
+                <td className="p-2 border border-gray-300 text-center">
+                  <Link
+                    href={`/ListaPrestamos/${prestamo.id}`}
+                    className="text-[#00755D] hover:text-[#e6be31]"
+                    onClick={() => handleSaveIdInCookies(prestamo.id)} 
+                  >
+                    <IoEyeSharp className="inline-block" size={25} />
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Paginación */}
+      <div className="flex justify-between items-center p-4">
+        <select
+          value={rowsPerPage}
+          onChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))}
+          className="border border-gray-300 rounded-md p-2"
+        >
+          {[5, 10, 15, 20].map((rows) => (
+            <option key={rows} value={rows}>
+              {rows} por página
+            </option>
+          ))}
+        </select>
+
+        <div>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(1)}
+            className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+          >
+            Inicio
+          </button>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"}`}
+          >
+            Anterior
+          </button>
+          <span>
+            Página {currentPage} de {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            className={`mx-1 px-3 py-1 rounded-md ${
+              currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white"
+            }`}
+          >
+            Siguiente
+          </button>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(totalPages)}
+            className={`mx-1 px-3 py-1 rounded-md ${
+              currentPage === totalPages ? "bg-gray-300 text-gray-500" : "bg-[#00755D] hover:bg-[#e6be31] text-white "
+            }`}
+          >
+            Fin
+          </button>
         </div>
       </div>
       
