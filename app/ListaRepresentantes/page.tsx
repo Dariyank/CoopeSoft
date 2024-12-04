@@ -1,5 +1,7 @@
 "use client";
 
+import { obtenerRepresentantes } from '@/app/actions'
+
 import React, { useState, useEffect, useRef } from "react";
 import { useRepresentante } from "../uses/useRepresentante";
 import { HiAdjustments } from "react-icons/hi";
@@ -16,6 +18,7 @@ const ListaRepresentantes: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const menuRef = useRef<HTMLDivElement>(null);
+  const representanteId = Cookies.get("representanteId") || undefined;
 
   // Inicializa la lista de representantes una vez (si está vacía)
   useEffect(() => {
@@ -27,6 +30,11 @@ const ListaRepresentantes: React.FC = () => {
     
     fetchData();
   }, [setRepresentantes, representantes]);
+
+  
+  useEffect(() => {
+    obtenerRepresentantes();
+  }, []);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -46,8 +54,12 @@ const ListaRepresentantes: React.FC = () => {
   };
 
    // Función para guardar el id del representante en las cookies
-   const handleSaveIdInCookies = (id: string) => {
+  const handleSaveIdInCookies = (id: string) => {
     Cookies.set('representanteId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
+
+  const removeIdCookies = () => {
+    Cookies.remove('representanteId');
   };
 
   // Función para ordenar los datos
@@ -149,8 +161,9 @@ const ListaRepresentantes: React.FC = () => {
 
         {/* Botón Registrar Representante */}
         <Link
-          href="/ListaRepresentantes/RegistrarRepresentante"
+          href="../ListaRepresentantes/RegistrarRepresentante"
           className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
+          onClick={() => representanteId != undefined ? removeIdCookies() : console.log(representanteId)} // Guardamos el id en cookies al hacer clic
         >
           Registrar Representante
         </Link>

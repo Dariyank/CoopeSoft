@@ -22,66 +22,6 @@
     "edad": 43,
     "salario": 45000,
     "direccion": "C/500,esquina volando,Republica Dominica"
-  },
-  {
-    "id": "001-4486135-4",
-    "nombre": "Manuel Turiso",
-    "email": "turiso.m@company.com",
-    "registro": "2022-02-11",
-    "cooperativa": "coop.Herrera",
-    "telefono": "809-345-0873",
-    "genero": "Masculino",
-    "edad": 43,
-    "salario": 45000,
-    "direccion": "C/500,esquina volando,Republica Dominica"
-  },
-  {
-    "id": "402-5593143-9",
-    "nombre": "Karol Gichola",
-    "email": "la-mas-bichota@email.com",
-    "registro": "2022-03-13",
-    "cooperativa": "coop.Herrera",
-    "telefono": "809-345-0873",
-    "genero": "Masculino",
-    "edad": 43,
-    "salario": 45000,
-    "direccion": "C/500,esquina volando,Republica Dominica"
-  },
-  {
-    "id": "402-1587291-4",
-    "nombre": "Ramon Tolentino",
-    "email": "ramon1544@email.com",
-    "registro": "2022-01-23",
-    "cooperativa": "coop.Herrera",
-    "telefono": "809-345-0873",
-    "genero": "Masculino",
-    "edad": 43,
-    "salario": 45000,
-    "direccion": "C/500,esquina volando,Republica Dominica"
-  },
-  {
-    "id": "001-8641576-3",
-    "nombre": "Cristian Casablanca",
-    "email": "blanco.la.para@johndoe.com",
-    "registro": "2022-01-09",
-    "cooperativa": "coop.Herrera",
-    "telefono": "809-345-0873",
-    "genero": "Masculino",
-    "edad": 43,
-    "salario": 45000,
-    "direccion": "C/500,esquina volando,Republica Dominica"
-  },
-  {
-    "id": "001-4486135-4",
-    "nombre": "Manuel Turiso",
-    "email": "turiso.m@company.com",
-    "registro": "2022-02-11",
-    "cooperativa": "coop.Herrera",
-    "telefono": "809-345-0873",
-    "genero": "Masculino",
-    "edad": 43,
-    "salario": 45000,
-    "direccion": "C/500,esquina volando,Republica Dominica"
   }
 ]
   

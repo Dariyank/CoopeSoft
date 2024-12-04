@@ -58,8 +58,12 @@ const DetallesRepresentante = () => {
 
 
   // Función para guardar el id del socio en las cookies
-  const handleSaveIdInCookies = (id: string) => {
+  const handleSaveMovInCookies = (id: string) => {
     Cookies.set('movimientoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
+
+  const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('representanteId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
   };
 
   // Filtrar los datos según la búsqueda
@@ -102,9 +106,10 @@ const DetallesRepresentante = () => {
                             {nombreRepresentante}
                         </h2>
                         <Link
-                            href="/movimientos"
+                            href="/ListaRepresentantes/RegistrarRepresentante"
                             className="text-[#00755D] hover:text-[#e6be31]"
-                            >
+                            onClick={() => handleSaveIdInCookies(representante.id)}
+                          >
                             <BsPencilSquare className="inline-block" size={20} />
                         </Link>
                         </div>
@@ -168,7 +173,7 @@ const DetallesRepresentante = () => {
                         <Link
                             href={`../../ListaMovimientos/${movimiento.id}`}
                             className="text-[#00755D] hover:text-[#e6be31]"
-                            onClick={() => handleSaveIdInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
+                            onClick={() => handleSaveMovInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
                         >
                             <IoEyeSharp className="inline-block" size={25} />
                         </Link>

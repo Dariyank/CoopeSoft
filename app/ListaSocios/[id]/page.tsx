@@ -58,7 +58,7 @@ const DetallesSocio = () => {
   }, [setMovimientos, movimientos]);
 
    // Función para guardar el id del socio en las cookies
-   const handleSaveIdInCookies = (id: string) => {
+   const handleSaveMovInCookies = (id: string) => {
     Cookies.set('movimientoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
   };
 
@@ -68,6 +68,11 @@ const DetallesSocio = () => {
       value.toString().toLowerCase().includes(search.toLowerCase())
     )
   );
+
+  // Función para guardar el id del socio en las cookies
+  const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('socioId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
 
   const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -102,8 +107,9 @@ const DetallesSocio = () => {
                   {nombreSocio}
                 </h2>
                 <Link
-                    href="/movimientos"
+                    href="/ListaSocios/RegistrarSocio"
                     className="text-[#00755D] hover:text-[#e6be31]"
+                    onClick={() => handleSaveIdInCookies(socio.id)}
                   >
                     <BsPencilSquare className="inline-block" size={20} />
                 </Link>
@@ -220,7 +226,7 @@ const DetallesSocio = () => {
                   <Link
                     href={`../../ListaMovimientos/${movimiento.id}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
-                    onClick={() => handleSaveIdInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
+                    onClick={() => handleSaveMovInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>

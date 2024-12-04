@@ -1,5 +1,7 @@
 "use client";
 
+import { obtenerTransacciones } from '@/app/actions'
+
 import React, { useState, useEffect, useRef } from "react";
 import { useMovimientos } from "../uses/useMovimientos";
 import { HiAdjustments } from "react-icons/hi";
@@ -27,6 +29,10 @@ const ListaMovimientos: React.FC =  () => {
     
     fetchData();
   }, [setMovimientos, movimientos]);
+
+  useEffect(() => {
+    obtenerTransacciones();
+  }, []);
 
 
   // Cerrar el menú si se hace clic fuera de él

@@ -1,5 +1,7 @@
 "use client";
 
+import { obtenerPrestamos } from '@/app/actions'
+
 import React, { useState, useEffect, useRef } from "react";
 import { usePrestamo } from "../uses/usePrestamo";
 import { HiAdjustments } from "react-icons/hi";
@@ -29,6 +31,9 @@ const ListaPrestamos: React.FC =  () => {
     fetchData();
   }, [setPrestamos, prestamos]);
 
+  useEffect(() => {
+    obtenerPrestamos();
+  }, []);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
