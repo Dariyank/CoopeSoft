@@ -8,11 +8,12 @@ import { IoEyeSharp } from "react-icons/io5";
 import { BsPencilSquare } from "react-icons/bs";
 
 import Link from "next/link";
-import { useMovimiento } from "@/app/uses/useMovimiento"; // Importa el hook del contexto
+import { useMovimientos } from "@/app/uses/useMovimientos"; // Importa el hook del contexto
 
 const DetallesSocio = () => {
   const [socio, setSocio] = useState<Socio | null>(null);
   const [socios, setSocios] = useState<Socio[]>([]); // Estado para la lista completa de socios
+  const { movimientos, setMovimientos } = useMovimientos()!; // Usamos el contextoconst [search, setSearch] = useState(""); 
   const [search] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -45,62 +46,21 @@ const DetallesSocio = () => {
     }
   }, [socios]);
 
-  const { movimientos, setMovimiento } = useMovimiento(); // Obtén los datos del contexto
-   // Inicializa la lista de socios una vez (si está vacía)
+   // Inicializa la lista de prestamos una vez (si está vacía)
    useEffect(() => {
-    if (movimientos.length === 0) {
-      setMovimiento([
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 452222,
-          estado: "completado",
-          notas: "Bla,,bla,bla,bla,ablalalflflfsf",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Pago intereses Anuales",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-        {
-          tipo: "Deposito",
-          fechaPago: "17-01-2024",
-          monto: 222222,
-          estado: "completado",
-          notas: "HOLAHOLA, Hola,hola,hola,hola,ahola",
-          cliente:"fulano de tal",
-        },
-      ]);
-    }
-  }, [movimientos, setMovimiento]);
+    const fetchData = async () => {
+      const response = await fetch('/movimientos.json');
+      const data = await response.json();
+      setMovimientos(data); // Cargamos los datos en el estado
+    };
+    
+    fetchData();
+  }, [setMovimientos, movimientos]);
+
+   // Función para guardar el id del socio en las cookies
+   const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('movimientoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
 
   // Filtrar los datos según la búsqueda
   const filteredMovimientos = movimientos.filter((movimiento) =>
@@ -241,25 +201,26 @@ const DetallesSocio = () => {
             </tr>
           </thead>
           <tbody>
-            {dataMovimientos.map((movimientos, index) => (
+            {dataMovimientos.map((movimiento, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
               >
-                <td className="p-2 border border-gray-300">{movimientos.tipo}</td>
-                <td className="p-2 border border-gray-300">{movimientos.fechaPago}</td>
+                <td className="p-2 border border-gray-300">{movimiento.tipoMovimiento}</td>
+                <td className="p-2 border border-gray-300">{movimiento.fechaRealizada}</td>
                 <td className="p-2 border border-gray-300">
-                  {movimientos.monto.toLocaleString("en-US", {
+                  {movimiento.monto.toLocaleString("en-US", {
                     style: "currency",
                     currency: "USD",
                   })}
                 </td>
-                <td className="p-2 border border-gray-300">{movimientos.estado}</td>
-                <td className="p-2 border border-gray-300">{movimientos.notas}</td>
+                <td className="p-2 border border-gray-300">{movimiento.estado}</td>
+                <td className="p-2 border border-gray-300">{movimiento.descripcion}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href="/movimientos"
+                    href={`../../ListaMovimientos/${movimiento.id}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
+                    onClick={() => handleSaveIdInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>

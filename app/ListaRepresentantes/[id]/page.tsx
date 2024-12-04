@@ -7,22 +7,21 @@ import { BsPencilSquare } from "react-icons/bs";
 import { IoEyeSharp } from "react-icons/io5";
 
 import Link from "next/link";
-import { useMovimiento } from "@/app/uses/useMovimiento"; // Importa el hook del contexto
+import { useMovimientos } from "@/app/uses/useMovimientos"; // Importa el hook del contexto
 
 const DetallesRepresentante = () => {
   const [representante, setRepresentante] = useState<Representante | null>(null);
   const [representantes, setRepresentantes] = useState<Representante[]>([]); // Estado para la lista completa de socios
+  const { movimientos, setMovimientos } = useMovimientos()!; // Usamos el contextoconst [search, setSearch] = useState(""); 
   const [search] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const { movimientos } = useMovimiento(); // Obtén los datos del contexto
-
-  // Inicializa la lista de socios una vez (si está vacía)
+  // Inicializa la lista de representantes una vez (si está vacía)
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/socios.json');
+        const response = await fetch('/representantes.json');
         const data = await response.json();
         setRepresentantes(data); // Cargar los datos en el estado
       } catch (error) {
@@ -37,24 +36,37 @@ const DetallesRepresentante = () => {
     const representanteId = Cookies.get("representanteId"); // Leer el ID desde las cookies
 
     if (representanteId) {
-      const foundSocio = representantes.find((s: Representante) => s.id === representanteId);
-      if (foundSocio) {
-        setRepresentante(foundSocio);
+      const foundRepresentante = representantes.find((s: Representante) => s.id === representanteId);
+      if (foundRepresentante) {
+        setRepresentante(foundRepresentante);
       } else {
         setRepresentante(null);
       }
     }
   }, [representantes]);
 
+  // Inicializa la lista de prestamos una vez (si está vacía)
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/movimientos.json');
+      const data = await response.json();
+      setMovimientos(data); // Cargamos los datos en el estado
+    };
+    
+    fetchData();
+  }, [setMovimientos, movimientos]);
 
-  // // Filtrar el representante según el ID o nombre (según lo que esté pasando como parámetro)
-  // const representante = representantes.find(s => s.id === id);
+
+  // Función para guardar el id del socio en las cookies
+  const handleSaveIdInCookies = (id: string) => {
+    Cookies.set('movimientoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+  };
 
   // Filtrar los datos según la búsqueda
   const filteredMovimientos = movimientos.filter((movimiento) =>
-      Object.values(movimiento).some((value) =>
+    Object.values(movimiento).some((value) =>
       value.toString().toLowerCase().includes(search.toLowerCase())
-      )
+    )
   );
 
   const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
@@ -64,7 +76,7 @@ const DetallesRepresentante = () => {
   // Si el representante existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
   const nombreRepresentante = representante ? representante.nombre : "Representante no encontrado";
   const cedula = representante ? representante.id : "Representante no encontrado";
-    
+  if (!representante) return <div>Cargando...</div>;
   return (
     <div>
         {/* Título */}
@@ -136,26 +148,27 @@ const DetallesRepresentante = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {dataMovimientos.map((movimientos, index) => (
+                    {dataMovimientos.map((movimiento, index) => (
                     <tr
                         key={index}
                         className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
                     >
-                        <td className="p-2 border border-gray-300">{movimientos.tipo}</td>
-                        <td className="p-2 border border-gray-300">{movimientos.fechaPago}</td>
+                        <td className="p-2 border border-gray-300">{movimiento.tipoMovimiento}</td>
+                        <td className="p-2 border border-gray-300">{movimiento.fechaRealizada}</td>
                         <td className="p-2 border border-gray-300">
-                        {movimientos.monto.toLocaleString("en-US", {
+                        {movimiento.monto.toLocaleString("en-US", {
                             style: "currency",
                             currency: "USD",
                         })}
                         </td>
-                        <td className="p-2 border border-gray-300">{movimientos.estado}</td>
-                        <td className="p-2 border border-gray-300">{movimientos.notas}</td>
-                        <td className="p-2 border border-gray-300">{movimientos.cliente}</td>
+                        <td className="p-2 border border-gray-300">{movimiento.estado}</td>
+                        <td className="p-2 border border-gray-300">{movimiento.descripcion}</td>
+                        <td className="p-2 border border-gray-300">{movimiento.nombre}</td>
                         <td className="p-2 border border-gray-300 text-center">
                         <Link
-                            href="/movimientos"
+                            href={`../../ListaMovimientos/${movimiento.id}`}
                             className="text-[#00755D] hover:text-[#e6be31]"
+                            onClick={() => handleSaveIdInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
                         >
                             <IoEyeSharp className="inline-block" size={25} />
                         </Link>

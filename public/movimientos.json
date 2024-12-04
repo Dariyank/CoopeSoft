@@ -6,7 +6,9 @@
       "email": "la-mas-bichota@email.com",
       "representante":"fulanito de tal",
       "fechaRealizada":"22-12-2024",
-      "monto":85000
+      "monto":85000,
+      "estado":1,
+      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
     },
     {
       "id": "402-5593143-9",
@@ -15,7 +17,9 @@
       "email": "la-mas-bichota@email.com",
       "representante":"fulanito de tal",
       "fechaRealizada":"22-12-2024",
-      "monto":85000
+      "monto":85000,
+      "estado":0,
+      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
     },
     {
       "id": "402-5593143-9",
@@ -24,7 +28,9 @@
       "email": "la-mas-bichota@email.com",
       "representante":"fulanito de tal",
       "fechaRealizada":"22-12-2024",
-      "monto":85000
+      "monto":85000,
+      "estado":1,
+      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
     },
     {
       "id": "402-5593143-9",
@@ -33,25 +39,31 @@
       "email": "la-mas-bichota@email.com",
       "representante":"fulanito de tal",
       "fechaRealizada":"22-12-2024",
-      "monto":85000
+      "monto":85000,
+      "estado":0,
+      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
     },
     {
       "id": "402-5593143-9",
       "tipoMovimiento":"Deposito",
-      "nombre": "Karol Gichola",
+      "nombre": "destini Gichola",
       "email": "la-mas-bichota@email.com",
       "representante":"fulanito de tal",
       "fechaRealizada":"22-12-2024",
-      "monto":85000
+      "monto":85000,
+      "estado":1,
+      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
     },
     {
       "id": "402-5593143-9",
       "tipoMovimiento":"Deposito",
-      "nombre": "Karol Gichola",
+      "nombre": "Kar Gichola",
       "email": "la-mas-bichota@email.com",
       "representante":"fulanito de tal",
       "fechaRealizada":"22-12-2024",
-      "monto":85000
+      "monto":85000,
+      "estado":0,
+      "descripcion":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
     }
 ]
     
