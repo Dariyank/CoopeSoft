@@ -2,7 +2,9 @@ import React from 'react'
 
 const Movimientos = () => {
   return (
-    <div>Detalle de Movimientos</div>
+    <div>
+      Detalle de Movimientos
+    </div>
   )
 }
 

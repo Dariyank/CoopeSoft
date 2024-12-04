@@ -7,16 +7,17 @@ import { BsPencilSquare } from "react-icons/bs";
 import { IoEyeSharp } from "react-icons/io5";
 
 import Link from "next/link";
-import { useMovimiento } from "@/app/uses/useMovimiento"; // Importa el hook del contexto
+import { useMovimientos } from "@/app/uses/useMovimientos"; // Importa el hook del contexto
 
 const DetallesRepresentante = () => {
   const [representante, setRepresentante] = useState<Representante | null>(null);
   const [representantes, setRepresentantes] = useState<Representante[]>([]); // Estado para la lista completa de socios
+  const { movimientos, setMovimientos } = useMovimientos()!; // Usamos el contextoconst [search, setSearch] = useState(""); 
   const [search] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const { movimientos } = useMovimiento(); // Obtén los datos del contexto
+  // const { movimientos } = useMovimiento(); // Obtén los datos del contexto
 
   // Inicializa la lista de socios una vez (si está vacía)
   useEffect(() => {
@@ -45,6 +46,17 @@ const DetallesRepresentante = () => {
       }
     }
   }, [representantes]);
+
+  // Inicializa la lista de prestamos una vez (si está vacía)
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/movimientos.json');
+      const data = await response.json();
+      setMovimientos(data); // Cargamos los datos en el estado
+    };
+    
+    fetchData();
+  }, [setMovimientos, movimientos]);
 
 
   // // Filtrar el representante según el ID o nombre (según lo que esté pasando como parámetro)
@@ -141,8 +153,8 @@ const DetallesRepresentante = () => {
                         key={index}
                         className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
                     >
-                        <td className="p-2 border border-gray-300">{movimientos.tipo}</td>
-                        <td className="p-2 border border-gray-300">{movimientos.fechaPago}</td>
+                        <td className="p-2 border border-gray-300">{movimientos.tipoMovimiento}</td>
+                        <td className="p-2 border border-gray-300">{movimientos.fechaRealizada}</td>
                         <td className="p-2 border border-gray-300">
                         {movimientos.monto.toLocaleString("en-US", {
                             style: "currency",
@@ -150,8 +162,8 @@ const DetallesRepresentante = () => {
                         })}
                         </td>
                         <td className="p-2 border border-gray-300">{movimientos.estado}</td>
-                        <td className="p-2 border border-gray-300">{movimientos.notas}</td>
-                        <td className="p-2 border border-gray-300">{movimientos.cliente}</td>
+                        <td className="p-2 border border-gray-300">{movimientos.descripcion}</td>
+                        <td className="p-2 border border-gray-300">{movimientos.nombre}</td>
                         <td className="p-2 border border-gray-300 text-center">
                         <Link
                             href="/movimientos"
