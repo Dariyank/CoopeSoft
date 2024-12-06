@@ -43,6 +43,9 @@ const DetallesSocio = () => {
         }
       }
     };
+
+    if(socio)
+      console.log(typeof socio.socioid);
     fetchData();
   }, []);
 
@@ -100,7 +103,6 @@ const DetallesSocio = () => {
 
   const limpiarDatos = () => {
     setSocio(null);  // Limpia los datos del socio
-    setMovimientos([]);  // Limpia los movimientos
   };
 
   const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
@@ -109,12 +111,12 @@ const DetallesSocio = () => {
   if (dataMovimientos[0] ) {
     dataMovimientos[0].tipo == "Depósito" ? monto = dataMovimientos[0].monto : 0;
   }
-
   // Si el socio existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
   const nombreSocio = socio ? socio.nombre : "Socio no encontrado";
   const cedula = socio ? String(socio.cedula) || 0 : "Socio no encontrado"
   const montoAhorradoSocio = socio ? Number(socio.montoahorrado) || 0 : "Socio no encontrado";
   const prestamoSocio = prestamo ? prestamo.totalprestado || 0 :"0";
+  const ultiMovimiento = movimientos && movimientos.length > 0 ? movimientos[0].monto || 0 : "0";
 
   if (!socio || !movimientos) {
     return <div>Cargando...</div>;
@@ -195,7 +197,7 @@ const DetallesSocio = () => {
                   </span>
                 </div>
                 <div className="text-2xl font-semibold">
-                   {monto}
+                   {ultiMovimiento}
                 </div> 
               </div>
               <div className="bg-gray-100 p-6 rounded-lg shadow-md text-center">

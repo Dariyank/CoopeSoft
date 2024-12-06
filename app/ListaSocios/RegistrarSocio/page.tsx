@@ -29,19 +29,6 @@ const RegistrarSocio = () => {
 
     //Validacion de datos en los campos
   const validateForm = () => {
-    const requiredFields = [
-      'nombre',
-      'cooperativaid',
-      'genero',
-      'edad',
-      'direccion',
-      'correo',
-      'telefono',
-      'montoahorrado',
-      'empresa',
-      'salario',
-      'cedula',
-    ];
   
     // Validaciones adicionales para campos específicos
     if (isNaN(Number(formData.edad)) || Number(formData.edad) <= 0) {
@@ -62,6 +49,10 @@ const RegistrarSocio = () => {
     }
     if (isNaN(Number(formData.salario)) || Number(formData.salario) < 0) {
       alert('El salario debe ser un número mayor o igual a cero.');
+      return false;
+    }
+    if ( formData.genero == "") {
+      alert('Debes elegir un genero en el formulario');
       return false;
     }
   

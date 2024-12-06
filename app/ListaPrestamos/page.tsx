@@ -3,7 +3,7 @@
 import { obtenerPrestamos } from '@/app/actions'
 
 import React, { useState, useEffect, useRef } from "react";
-import { usePrestamo } from "../uses/usePrestamo";
+import { usePrestamos } from "../uses/usePrestamos";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
@@ -12,7 +12,7 @@ import Cookies from 'js-cookie';
 
 const ListaPrestamos: React.FC =  () => {
 
-  const { prestamos, setPrestamos } = usePrestamo()!; // Usamos el contextoconst [search, setSearch] = useState("");
+  const { prestamos, setPrestamos } = usePrestamos()!; // Usamos el contextoconst [search, setSearch] = useState("");
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);

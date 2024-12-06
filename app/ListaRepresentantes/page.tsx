@@ -1,9 +1,9 @@
 "use client";
 
-import { obtenerRepresentantes } from '@/app/actions'
+import { obtenerRepresentantesPorCooperativa } from '@/app/actions'
 
 import React, { useState, useEffect, useRef } from "react";
-import { useRepresentante } from "../uses/useRepresentante";
+import { useRepresentantes } from "@/app/uses/useRepresentantes";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
@@ -11,9 +11,9 @@ import Cookies from 'js-cookie';
 
 const ListaRepresentantes: React.FC = () => {
 
-  const { representantes, setRepresentantes } = useRepresentante(); // Obtén los datos del contexto
+  const { representantes, setRepresentantes } = useRepresentantes(); // Obtén los datos del contexto
   const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("id");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -23,18 +23,17 @@ const ListaRepresentantes: React.FC = () => {
   // Inicializa la lista de representantes una vez (si está vacía)
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/representantes.json');
-      const data = await response.json();
-      setRepresentantes(data); // Cargamos los datos en el estado
-    };
-    
-    fetchData();
-  }, [setRepresentantes, representantes]);
+      const { success, data, error } = await obtenerRepresentantesPorCooperativa("1");
 
-  
-  useEffect(() => {
-    obtenerRepresentantes();
-  }, []);
+      if (success && Array.isArray(data)) {
+        setRepresentantes(data);
+      } else {
+        console.error('Error fetching socios:', error || 'Invalid data');
+      }
+    };
+    fetchData();
+  }, [setRepresentantes]);
+
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -47,7 +46,6 @@ const ListaRepresentantes: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
   // Función para manejar el cambio en el input de búsqueda
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -65,9 +63,9 @@ const ListaRepresentantes: React.FC = () => {
   // Función para ordenar los datos
   const handleSort = (criteria: "asc" | "desc" | "id") => {
     const sorted = [...representantes].sort((a, b) => {
-      if (criteria === "id") return a.id.localeCompare(b.id);
-      if (criteria === "asc") return a.cooperativa.localeCompare(b.cooperativa);
-      return b.cooperativa.localeCompare(a.cooperativa);
+      if (criteria === "id") return parseInt(a.representanteid, 10) - parseInt(b.representanteid, 10);
+      if (criteria === "asc") return a.nombre.localeCompare(b.nombre);
+      return b.nombre.localeCompare(a.nombre);
     });
 
     setSortOrder(criteria); // Actualiza el estado de `sortOrder`
@@ -77,7 +75,7 @@ const ListaRepresentantes: React.FC = () => {
   // Filtrar los datos según la búsqueda
   const filteredRepresentantes = representantes.filter((representante) =>
     Object.values(representante).some((value) =>
-      value.toString().toLowerCase().includes(search.toLowerCase())
+      value ? value.toString().toLowerCase().includes(search.toLowerCase()) : false
     )
   );
 
@@ -176,26 +174,30 @@ const ListaRepresentantes: React.FC = () => {
             <tr>
               <th className="p-2 border border-gray-300">ID</th>
               <th className="p-2 border border-gray-300">Nombre</th>
+              <th className="p-2 border border-gray-300">Edad</th>
               <th className="p-2 border border-gray-300">Email</th>
-              <th className="p-2 border border-gray-300">Registro</th>
+              <th className="p-2 border border-gray-300">Direccion</th>
+              <th className="p-2 border border-gray-300">Telefono</th>
               <th className="p-2 border border-gray-300">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {dataRepresentante.map((representante, index) => (
               <tr
-                key={index}
+                key={representante.representanteid}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
               >
-                <td className="p-2 border border-gray-300">{representante.id}</td>
+                <td className="p-2 border border-gray-300">{representante.representanteid}</td>
                 <td className="p-2 border border-gray-300">{representante.nombre}</td>
-                <td className="p-2 border border-gray-300">{representante.email}</td>
-                <td className="p-2 border border-gray-300">{representante.registro}</td>
+                <td className="p-2 border border-gray-300">{representante.edad}</td>
+                <td className="p-2 border border-gray-300">{representante.correo}</td>
+                <td className="p-2 border border-gray-300">{representante.direccion}</td>
+                <td className="p-2 border border-gray-300">{representante.telefono}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href={`/ListaRepresentantes/${representante.id}`}
+                    href={`/ListaRepresentantes/${representante.representanteid}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
-                    onClick={() => handleSaveIdInCookies(representante.id)} 
+                    onClick={() => handleSaveIdInCookies(representante.representanteid)} 
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>

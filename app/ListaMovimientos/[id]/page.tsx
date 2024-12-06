@@ -28,8 +28,6 @@ const DetalleMovimientos = () => {
         const { success, data, error } = await obtenerMovimiento(movimientoID);
         
         if (success && data) {
-
-          console.log(data[0])
           const movimiento: TransaccionExtendida = {
             transaccionid: data[0].transaccionid,
             nombresocio: data[0].socios.length > 0 ? data[0].socios[0].nombre : '', // Acceder al nombre de socio

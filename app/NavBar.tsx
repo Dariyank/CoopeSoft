@@ -23,7 +23,7 @@ const Navbar = () => {
   const pathname = useCurrentPath();
 
   return (
-    <nav className="bg-slate-50 flex items-center px-6 py-6 h-[65px] mb-5">
+    <nav className="bg-slate-50 flex items-center px-6 py-6 h-[65px]">
       {/* Logo Section */}
       <div
         className="flex-shrink-0 w-[150px] text-xl font-bold"
