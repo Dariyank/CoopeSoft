@@ -1,28 +1,26 @@
-"use client";
-
 import React, { createContext, useState, PropsWithChildren, Dispatch, SetStateAction } from 'react';
 
-// Define la interfaz para los socios
-
+// Define la interfaz para los socio
 export interface Socio {
-  id: string;
+  socioid: string;
   nombre: string;
-  email: string;
-  telefono:string;
-  genero: string,
-  edad:number,
-  salario:number,
-  direccion:string,
+  genero: string;
+  correo: string;
+  edad: number;
+  telefono: string;
+  salario: number;
+  direccion: string;
   registro: string;
-  montoAhorrado: number;
+  montoahorrado: number;
   estado: string;
   empresa: string;
+  cedula: string
 }
 
 // Define la interfaz para el contexto
 interface SocioContextType {
-  socios: Socio[];
-  setSocios: Dispatch<SetStateAction<Socio[]>>;
+  socio: Socio | null; // Ahora es un solo objeto o null si no hay socio
+  setSocio: Dispatch<SetStateAction<Socio | null>>; // Método para actualizar el socio
 }
 
 // Crea el contexto con un valor inicial
@@ -30,10 +28,10 @@ export const SocioContext = createContext<SocioContextType | undefined>(undefine
 
 // Define el proveedor
 export const SocioProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [socios, setSocios] = useState<Socio[]>([]);
+  const [socio, setSocio] = useState<Socio | null>(null); // Inicialmente no hay socio
 
   return (
-    <SocioContext.Provider value={{ socios, setSocios }}>
+    <SocioContext.Provider value={{ socio, setSocio }}>
       {children}
     </SocioContext.Provider>
   );

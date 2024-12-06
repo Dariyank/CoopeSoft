@@ -1,38 +1,38 @@
 "use client";
 
-import { obtenerSocios } from '@/app/actions'
+import { obtenerSociosPorCooperativa } from '@/app/actions'
 
 import React, { useState, useEffect, useRef } from "react";
-import { useSocio } from "../uses/useSocio";
+import { useSocios } from "../uses/useSocios";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
 import Cookies from 'js-cookie';
 
 const ListaSocios: React.FC = () => {
-  
-  const {socios, setSocios} = useSocio(); // Usamos el contextoconst [search, setSearch] = useState("");
+  const { socios, setSocios } = useSocios();
   const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("id");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const menuRef = useRef<HTMLDivElement>(null);
   const socioId = Cookies.get("socioId");
+  
 
-  // Simulamos la carga de datos desde un JSON (puedes importar el JSON directamente si es local)
+  // Carga inicial de socios
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/socios.json');
-      const data = await response.json();
-      setSocios(data); // Cargamos los datos en el estado
+      const { success, data, error } = await obtenerSociosPorCooperativa("1");
+
+      if (success && Array.isArray(data)) {
+        setSocios(data);
+      } else {
+        console.error('Error fetching socios:', error || 'Invalid data');
+      }
     };
     fetchData();
-  }, [setSocios, socios]);
-
-  useEffect(() => {
-    obtenerSocios();
-  }, []);
+  }, [setSocios]);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -51,9 +51,9 @@ const ListaSocios: React.FC = () => {
     setSearch(e.target.value);
   };
 
-   // Función para guardar el id del socio en las cookies
+  // Función para guardar el id del socio en las cookies
   const handleSaveIdInCookies = (id: string) => {
-    Cookies.set('socioId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
+    Cookies.set("socioId", id, { expires: 7, sameSite: "Strict", secure: true }); // Guardamos el ID en cookies, con una expiración de 7 días
   };
 
   const removeIdCookies = () => {
@@ -63,22 +63,21 @@ const ListaSocios: React.FC = () => {
   // Función para ordenar los datos
   const handleSort = (criteria: "asc" | "desc" | "id") => {
     const sorted = [...socios].sort((a, b) => {
-      if (criteria === "id") return a.id.localeCompare(b.id);
-      if (criteria === "asc") return a.montoAhorrado - b.montoAhorrado;
-      return b.montoAhorrado - a.montoAhorrado;
+      if (criteria === "id") return parseInt(a.socioid, 10) - parseInt(b.socioid, 10);
+      if (criteria === "asc") return a.montoahorrado - b.montoahorrado;
+      return b.montoahorrado - a.montoahorrado;
     });
 
     setSortOrder(criteria); // Actualiza el estado de `sortOrder`
     setSocios(sorted);
   };
 
-  // Filtrar los datos según la búsqueda
+  // Filtrar los datos según la búsqueda (usando el debouncedSearch)
   const filteredSocios = socios.filter((socio) =>
     Object.values(socio).some((value) =>
-      value.toString().toLowerCase().includes(search.toLowerCase())
+      value ? value.toString().toLowerCase().includes(search.toLowerCase()) : false
     )
   );
-
   const totalPages = Math.ceil(filteredSocios.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const currentData = filteredSocios.slice(startIndex, startIndex + rowsPerPage);
@@ -118,7 +117,7 @@ const ListaSocios: React.FC = () => {
                   }`}
                   role="menuitem"
                 >
-                  Ascendente
+                  Mayor Ahorro
                 </button>
                 <button
                   onClick={() => handleSort("desc")}
@@ -127,7 +126,7 @@ const ListaSocios: React.FC = () => {
                   }`}
                   role="menuitem"
                 >
-                  Descendente
+                  Menor Ahorro
                 </button>
                 <button
                   onClick={() => handleSort("id")}
@@ -136,7 +135,7 @@ const ListaSocios: React.FC = () => {
                   }`}
                   role="menuitem"
                 >
-                  ID
+                  Por ID
                 </button>
               </div>
             </div>
@@ -177,7 +176,7 @@ const ListaSocios: React.FC = () => {
               <th className="p-2 border border-gray-300">Email</th>
               <th className="p-2 border border-gray-300">Registro</th>
               <th className="p-2 border border-gray-300">Monto ahorrado</th>
-              <th className="p-2 border border-gray-300">Estado</th>
+              <th className="p-2 border border-gray-300">Ahorros</th>
               <th className="p-2 border border-gray-300">Empresa</th>
               <th className="p-2 border border-gray-300">Acciones</th>
             </tr>
@@ -185,26 +184,28 @@ const ListaSocios: React.FC = () => {
           <tbody>
             {currentData.map((socio, index) => (
               <tr
-                key={index}
+                key={socio.socioid}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
               >
-                <td className="p-2 border border-gray-300">{socio.id}</td>
+                <td className="p-2 border border-gray-300">{socio.socioid}</td>
                 <td className="p-2 border border-gray-300">{socio.nombre}</td>
-                <td className="p-2 border border-gray-300">{socio.email}</td>
+                <td className="p-2 border border-gray-300">{socio.correo}</td>
                 <td className="p-2 border border-gray-300">{socio.registro}</td>
                 <td className="p-2 border border-gray-300">
-                  {socio.montoAhorrado.toLocaleString("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                  })}
+                {socio.montoahorrado
+                  ? socio.montoahorrado.toLocaleString("en-US", {
+                      style: "currency",
+                      currency: "USD",
+                    })
+                  : "No tiene nada ahorrado"}
                 </td>
-                <td className="p-2 border border-gray-300">{socio.estado}</td>
+                <td className="p-2 border border-gray-300">{socio.montoahorrado}</td>
                 <td className="p-2 border border-gray-300">{socio.empresa}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href={`/ListaSocios/${socio.id}`}
+                    href={`/ListaSocios/perfilSocio`}
                     className="text-[#00755D] hover:text-[#e6be31]"
-                    onClick={() => handleSaveIdInCookies(socio.id)} // Guardamos el id en cookies al hacer clic
+                    onClick={() => {handleSaveIdInCookies(socio.socioid)}} // Guardamos el id en cookies al hacer clic
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>

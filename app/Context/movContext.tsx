@@ -16,7 +16,7 @@ interface Movimiento {
 
 // Define la interfaz para el contexto
 interface MovimientoContextType {
-  movimientos: Movimiento[];
+  movimiento: Movimiento[];
   setMovimiento: Dispatch<SetStateAction<Movimiento[]>>;
 }
 
@@ -25,10 +25,10 @@ export const MovimientoContext = createContext<MovimientoContextType | undefined
 
 // Define el proveedor
 export const MovimientoProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [movimientos, setMovimiento] = useState<Movimiento[]>([]);
+  const [movimiento, setMovimiento] = useState<Movimiento[]>([]);
 
   return (
-    <MovimientoContext.Provider value={{ movimientos, setMovimiento }}>
+    <MovimientoContext.Provider value={{ movimiento, setMovimiento }}>
       {children}
     </MovimientoContext.Provider>
   );

@@ -163,7 +163,7 @@ const ListaRepresentantes: React.FC = () => {
         <Link
           href="../ListaRepresentantes/RegistrarRepresentante"
           className="px-4 py-2 bg-[#00755D] text-white rounded-lg hover:bg-[#e6be31] flex items-center justify-center"
-          onClick={() => representanteId != undefined ? removeIdCookies() : console.log(representanteId)} // Guardamos el id en cookies al hacer clic
+          onClick={() => representanteId != undefined ? removeIdCookies() : null} // Guardamos el id en cookies al hacer clic
         >
           Registrar Representante
         </Link>
