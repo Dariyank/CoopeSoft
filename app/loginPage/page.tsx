@@ -97,12 +97,14 @@ const LoginPage = () => {
                 />
               </div>
             </div>
-            <button
-              type="submit"
-              className="w-full bg-[#00755D] text-white py-2 rounded-md font-medium hover:bg-[#005844] transition-colors"
-            >
-              Crear cuenta
-            </button>
+            <Link href="/Representante">
+              <button
+                type="submit"
+                className="w-full bg-[#00755D] text-white py-2 rounded-md font-medium hover:bg-[#005844] transition-colors"
+              >
+                Crear cuenta
+              </button>
+            </Link>
           </form>
         </div>
       </main>
