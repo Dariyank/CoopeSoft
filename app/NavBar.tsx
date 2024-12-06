@@ -46,7 +46,7 @@ const Navbar = () => {
         className="flex-shrink-0 w-[150px] text-sm font-semibold text-[12px] flex items-center h-[40px] justify-end"
         style={{ color: "#00755D" }}
       >
-        <Link className="flex items-center space-x-[3px]" href="/">
+        <Link className="flex items-center space-x-[3px]" href="/LandingPage">
           <span>Coop. Herrera</span>
           <BiUserCircle size={35} />
         </Link>
