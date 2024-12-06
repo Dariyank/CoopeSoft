@@ -5,8 +5,7 @@ import Link from "next/link";
 
 const LoginPage = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      
+    <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100">
       {/* Login and Register Forms */}
       <main className="flex flex-col lg:flex-row justify-center items-center gap-10 mt-12">
         {/* Login Form */}
@@ -41,7 +40,7 @@ const LoginPage = () => {
                 />
               </div>
             </div>
-            <Link href="/" >
+            <Link href="/">
               <button
                 type="submit"
                 className="w-full bg-[#00755D] text-white py-2 rounded-md font-medium hover:bg-[#005844] transition-colors"

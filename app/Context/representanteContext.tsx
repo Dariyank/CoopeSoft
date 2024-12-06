@@ -5,23 +5,22 @@ import React, { createContext, useState, PropsWithChildren, Dispatch, SetStateAc
 // Define la interfaz para los representantes
 
 export interface Representante {
-  id: string;
+  representanteid: string;
   nombre: string;
-  email: string;
-  registro: string;
-  cooperativa: string;
-  telefono:string;
+  cooperativaid: number;
   genero: string;
   edad:number;
-  salario:number;
   direccion:string;
+  correo: string;
+  telefono:string;
+  contrasena: string
 }
 
 
 // Define la interfaz para el contexto
 interface RepresentanteContextType {
-  representantes: Representante[];
-  setRepresentantes: Dispatch<SetStateAction<Representante[]>>;
+  representante: Representante | null; // Ahora es un solo objeto o null si no hay Representante
+  setRepresentante: Dispatch<SetStateAction<Representante | null>>; // Método para actualizar el Representante
 }
 
 // Crea el contexto con un valor inicial
@@ -29,10 +28,10 @@ export const RepresentanteContext = createContext<RepresentanteContextType | und
 
 // Define el proveedor
 export const RepresentanteProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [representantes, setRepresentantes] = useState<Representante[]>([]);
+  const [representante, setRepresentante] = useState<Representante | null>(null); // Inicialmente no hay Representante
 
   return (
-    <RepresentanteContext.Provider value={{ representantes, setRepresentantes }}>
+    <RepresentanteContext.Provider value={{ representante, setRepresentante }}>
       {children}
     </RepresentanteContext.Provider>
   );

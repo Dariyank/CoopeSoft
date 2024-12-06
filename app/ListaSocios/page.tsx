@@ -117,7 +117,7 @@ const ListaSocios: React.FC = () => {
                   }`}
                   role="menuitem"
                 >
-                  Mayor Ahorro
+                  Menor Ahorro
                 </button>
                 <button
                   onClick={() => handleSort("desc")}
@@ -126,7 +126,7 @@ const ListaSocios: React.FC = () => {
                   }`}
                   role="menuitem"
                 >
-                  Menor Ahorro
+                  Mayor Ahorro
                 </button>
                 <button
                   onClick={() => handleSort("id")}

@@ -1,17 +1,26 @@
 "use client";
 
+
+
+import { 
+  obtenerTransaccionesPorRepresentante, 
+  obtenerRepresentante,
+} from '@/app/actions'
+
 import React, { useState, useEffect} from "react";
-import { Representante } from '../../Context/representanteContext';
 import Cookies from "js-cookie";
 import { BsPencilSquare } from "react-icons/bs";
 import { IoEyeSharp } from "react-icons/io5";
+import { TransaccionesExtendida } from "../../Context/tramovimientosContext";
 
 import Link from "next/link";
 import { useMovimientos } from "@/app/uses/useMovimientos"; // Importa el hook del contexto
+import { useRepresentante } from '@/app/uses/useRepresentante';
 
 const DetallesRepresentante = () => {
-  const [representante, setRepresentante] = useState<Representante | null>(null);
-  const [representantes, setRepresentantes] = useState<Representante[]>([]); // Estado para la lista completa de socios
+
+  const [movimiento, setMovimiento] = useState<TransaccionesExtendida[] | null>(null);
+  const { representante, setRepresentante } = useRepresentante();
   const { movimientos, setMovimientos } = useMovimientos()!; // Usamos el contextoconst [search, setSearch] = useState(""); 
   const [search] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,43 +28,56 @@ const DetallesRepresentante = () => {
 
   // Inicializa la lista de representantes una vez (si está vacía)
   useEffect(() => {
+    limpiarDatos();
     const fetchData = async () => {
-      try {
-        const response = await fetch('/representantes.json');
-        const data = await response.json();
-        setRepresentantes(data); // Cargar los datos en el estado
-      } catch (error) {
-        console.error("Error al cargar los datos:", error);
+      const representanteID = Cookies.get("representanteId");
+      
+      if(representanteID){
+        const { success, data, error } = await obtenerRepresentante(representanteID);
+
+        if (success && Array.isArray(data)) {
+          setRepresentante(data[0]);
+        } else {
+          console.error('Error fetching representante:', error || 'Invalid data');
+        }
       }
     };
 
+    if(representante)
+      console.log(typeof representante.representanteid);
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const representanteId = Cookies.get("representanteId"); // Leer el ID desde las cookies
-
-    if (representanteId) {
-      const foundRepresentante = representantes.find((s: Representante) => s.id === representanteId);
-      if (foundRepresentante) {
-        setRepresentante(foundRepresentante);
-      } else {
-        setRepresentante(null);
-      }
-    }
-  }, [representantes]);
-
-  // Inicializa la lista de prestamos una vez (si está vacía)
+  // Inicializa la lista de movimientos una vez (si está vacía)
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/movimientos.json');
-      const data = await response.json();
-      setMovimientos(data); // Cargamos los datos en el estado
+      const representanteID = Cookies.get("representanteId");
+      if (representanteID) {
+        const { success, data, error } = await obtenerTransaccionesPorRepresentante(representanteID);
+        if (success && Array.isArray(data)) {
+          const transformedData: TransaccionesExtendida[] = data.map((item) => {
+            //@ts-ignore
+            const nombreSocio = item.socios?.nombre || "Nombre no disponible";
+  
+            return {
+              transaccionid: item.transaccionid,
+              nombresocio: nombreSocio,
+              nombrerepresentante: item.representanteid,
+              tipo: item.tipo,
+              monto: item.monto,
+              fecha: item.fecha,
+              estado: item.estado,
+              descripcion: item.descripcion,
+            };
+          });
+          setMovimiento(transformedData);
+        } else {
+          console.error('Error fetching movimientos:', error || 'Invalid data');
+        }
+      }
     };
-    
     fetchData();
-  }, [setMovimientos, movimientos]);
-
+  }, [setMovimiento]);
 
   // Función para guardar el id del socio en las cookies
   const handleSaveMovInCookies = (id: string) => {
@@ -67,19 +89,24 @@ const DetallesRepresentante = () => {
   };
 
   // Filtrar los datos según la búsqueda
-  const filteredMovimientos = movimientos.filter((movimiento) =>
+  const filteredMovimientos = (movimiento || []).filter((movimiento) =>
     Object.values(movimiento).some((value) =>
       value.toString().toLowerCase().includes(search.toLowerCase())
     )
   );
+  
+  const limpiarDatos = () => {
+    setRepresentante(null);  // Limpia los datos del socio
+  };
 
   const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
-  const dataMovimientos = filteredMovimientos.slice(startIndex, startIndex + rowsPerPage);
+  const dataMovimiento = filteredMovimientos.slice(startIndex, startIndex + rowsPerPage);
 
   // Si el representante existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
   const nombreRepresentante = representante ? representante.nombre : "Representante no encontrado";
-  const cedula = representante ? representante.id : "Representante no encontrado";
+  const cedula = representante ? representante.representanteid : "Representante no encontrado";
+
   if (!representante) return <div>Cargando...</div>;
   return (
     <div>
@@ -91,8 +118,8 @@ const DetallesRepresentante = () => {
         <div className="flex items-center justify-center p-6">
             {/* Contenedor principal */}
             <div className="w-full max-w-4xl px-6 ">
-                <div className="bg-white border border-gray-300 rounded-lg shadow-md p-6">
-                    {/* Encabezado del perfil */}
+              <div className="bg-white border border-gray-300 rounded-lg shadow-md p-6">
+                  {/* Encabezado del perfil */}
                     <div className="flex items-center space-x-4">
                         {/* Imagen de perfil */}
                         <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
@@ -108,81 +135,89 @@ const DetallesRepresentante = () => {
                         <Link
                             href="/ListaRepresentantes/RegistrarRepresentante"
                             className="text-[#00755D] hover:text-[#e6be31]"
-                            onClick={() => handleSaveIdInCookies(representante.id)}
+                            onClick={() => handleSaveIdInCookies(representante.representanteid)}
                           >
                             <BsPencilSquare className="inline-block" size={20} />
                         </Link>
                         </div>
                         {representante ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div className="px-2">
-                                <p className="text-sm"><strong>Cédula: </strong>{cedula}</p>
-                                <p className="text-sm"><strong>Email: </strong>{representante.email}</p>
-                                <p className="text-sm"><strong>Teléfono: </strong>{representante.telefono} </p>
-                            </div>
-                            <div className="px-2">
-                                <p className="text-sm"><strong>Género: </strong>{representante.genero} </p>
-                                <p className="text-sm"><strong>Edad: </strong>{representante.edad} </p>
-                            </div>
-                            <div className="px-2">
-                                <p className="text-sm"><strong>Dirección: </strong>{representante.direccion} </p>
-                            </div>
-                            </div>
+                          <div className="px-2">
+                              <p className="text-sm"><strong>ID: </strong>{cedula}</p>
+                              <p className="text-sm"><strong>Email: </strong>{representante.correo}</p>
+                              <p className="text-sm"><strong>Teléfono: </strong>{representante.telefono} </p>
+                          </div>
+                          <div className="px-2">
+                              <p className="text-sm"><strong>Género: </strong>{representante.genero} </p>
+                              <p className="text-sm"><strong>Edad: </strong>{representante.edad} </p>
+                          </div>
+                          <div className="px-2">
+                              <p className="text-sm"><strong>Dirección: </strong>{representante.direccion} </p>
+                          </div>
+                          </div>
                         ) : (
-                            <p>Representante no encontrado</p>
+                          <p>Representante no encontrado</p>
                         )}
-                        </div>
                     </div>
+                  </div>
                 </div>
             </div>
         </div>
 
         {/* Tabla */}
         <div className="overflow-x-auto p-6 py-4">
-            <div><h2 className="font-bold py-2 text-[#00755D] text-[25px]">Movimientos</h2></div>
-            <table className="w-full border-collapse border border-gray-300">
-                <thead className="bg-[#00755D] text-white">
-                    <tr>
-                    <th className="p-2 border border-gray-300">Tipo</th>
-                    <th className="p-2 border border-gray-300">Fecha Pago</th>
-                    <th className="p-2 border border-gray-300">Monto</th>
-                    <th className="p-2 border border-gray-300">Estado</th>
-                    <th className="p-2 border border-gray-300">Notas</th> 
-                    <th className="p-2 border border-gray-300">Cliente</th>
-                    <th className="p-2 border border-gray-300">Ver</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {dataMovimientos.map((movimiento, index) => (
-                    <tr
-                        key={index}
-                        className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
-                    >
-                        <td className="p-2 border border-gray-300">{movimiento.tipoMovimiento}</td>
-                        <td className="p-2 border border-gray-300">{movimiento.fechaRealizada}</td>
-                        <td className="p-2 border border-gray-300">
-                        {movimiento.monto.toLocaleString("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                        })}
-                        </td>
-                        <td className="p-2 border border-gray-300">{movimiento.estado}</td>
-                        <td className="p-2 border border-gray-300">{movimiento.descripcion}</td>
-                        <td className="p-2 border border-gray-300">{movimiento.nombre}</td>
-                        <td className="p-2 border border-gray-300 text-center">
-                        <Link
-                            href={`../../ListaMovimientos/${movimiento.id}`}
-                            className="text-[#00755D] hover:text-[#e6be31]"
-                            onClick={() => handleSaveMovInCookies(movimiento.id)} // Guardamos el id en cookies al hacer clic
-                        >
-                            <IoEyeSharp className="inline-block" size={25} />
-                        </Link>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-            </table>
-      </div>
+          <div><h2 className="font-bold py-2 text-[#00755D] text-[25px]">Movimientos</h2></div>
+          <table className="w-full border-collapse border border-gray-300">
+            <thead className="bg-[#00755D] text-white">
+                <tr>
+                <th className="p-2 border border-gray-300 w-[10%]">Tipo</th>
+                <th className="p-2 border border-gray-300 w-[10%]">Fecha Pago</th>
+                <th className="p-2 border border-gray-300 w-[10%]">Monto</th>
+                <th className="p-2 border border-gray-300 w-[15%]">Estado</th>
+                <th className="p-2 border border-gray-300 w-[15%]">Cliente</th>
+                <th className="p-2 border border-gray-300 w-[30%]">Notas</th> 
+                <th className="p-2 border border-gray-300 w-[10%]">Ver</th>
+                </tr>
+            </thead>
+            <tbody>
+            {dataMovimiento && Array.isArray(movimiento) && movimiento.length > 0 ? (
+              movimiento.map((movimiento, index) => (
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                >
+                  <td className="p-2 border border-gray-300">{movimiento.tipo}</td>
+                  <td className="p-2 border border-gray-300">{movimiento.fecha}</td>
+                  <td className="p-2 border border-gray-300">
+                      {movimiento.monto.toLocaleString("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                      })}
+                  </td>
+                  <td className="p-2 border border-gray-300">{movimiento.estado == '1' ? "Realizada" : "Cancelada"}</td>
+                  <td className="p-2 border border-gray-300">{movimiento.nombresocio}</td>
+                  <td className="p-2 border border-gray-300">{movimiento.descripcion}</td>
+                  <td className="p-2 border border-gray-300 text-center">
+                      <Link
+                          href={`../../ListaMovimientos/${movimiento.transaccionid}`}
+                          className="text-[#00755D] hover:text-[#e6be31]"
+                          onClick={() => handleSaveMovInCookies(String(movimiento.transaccionid))}
+                      >
+                          <IoEyeSharp className="inline-block" size={25} />
+                      </Link>
+                  </td>
+                </tr>
+              ))
+            ) : (
+                <tr>
+                  <td className="text-center p-4">
+                    No hay movimientos disponibles.
+                  </td>
+                </tr>
+            )}
+            </tbody>
+          </table>
+        </div>
     
         {/* Paginación */}
         <div className="flex justify-between items-center p-4">

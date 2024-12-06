@@ -52,6 +52,41 @@ export const obtenerSociosPorCooperativa = async (cooperativaID: string) => {
 
 /**
  * Obtiene todos los representantes de una cooperativa específica.
+ * @param cooperativaID - El ID de la cooperativa para la que se desean obtener los representantes.
+ * @returns Una lista de representantes o un error si la consulta falla.
+ */
+export const obtenerRepresentantesPorCooperativa = async (cooperativaID: string) => {
+  try {
+    // Realizar la consulta para obtener los representantes de la cooperativa
+    const { data, error } = await supabase
+      .from('representantes')  // Nombre de la tabla de representantes
+      .select('*')             // Obtener todas las columnas, ajusta según necesites
+      .eq('cooperativaid', cooperativaID)
+      .order('representanteid', { ascending: true }); // Filtrar por el ID de la cooperativa
+
+    if (error) {
+      throw new Error(`Error al obtener socios: ${error.message}`);
+    }
+
+    // Si no hay representantes, retornar un mensaje vacío
+    if (data?.length === 0) {
+      return { success: false, message: 'No se encontraron representantes.' };
+    }
+
+    return { success: true, data };
+  } catch (error: unknown) {
+    // Manejo de errores
+    if (error instanceof Error) {
+      console.error('Error en obtenerRepresentantesPorCooperativa:', error.message);
+      return { success: false, error: error.message };
+    }
+    console.error('Error desconocido:', error);
+    return { success: false, error: 'Error desconocido' };
+  }
+};
+
+/**
+ * Obtiene todos los representantes de una cooperativa específica.
  * @param socioID - El ID de la cooperativa para la que se desean obtener los representantes.
  * @returns Una lista de representantes o un error si la consulta falla.
  */
@@ -86,6 +121,40 @@ export const obtenerSocio = async (socioID: string) => {
 
 /**
  * Obtiene todos los representantes de una cooperativa específica.
+ * @param RepresentanteID - El ID de el representante para la que se desean obtener los datos.
+ * @returns Una lista de representantes o un error si la consulta falla.
+ */
+export const obtenerRepresentante= async (RepresentanteID: string) => {
+  try {
+    // Realizar la consulta para obtener los representantes de la cooperativa
+    const { data, error } = await supabase
+      .from('representantes')  // Nombre de la tabla de representantes
+      .select('*')             // Obtener todas las columnas, ajusta según necesites
+      .eq('representanteid', RepresentanteID);  // Filtrar por el ID de la cooperativa
+
+    if (error) {
+      throw new Error(`Error al obtener representante: ${error.message}`);
+    }
+
+    // Si no hay representantes, retornar un mensaje vacío
+    if (data?.length === 0) {
+      return { success: false, message: 'No se encontraron representantes.' };
+    }
+
+    return { success: true, data };
+  } catch (error: unknown) {
+    // Manejo de errores
+    if (error instanceof Error) {
+      console.error('Error en obtenerRepresentante:', error.message);
+      return { success: false, error: error.message };
+    }
+    console.error('Error desconocido:', error);
+    return { success: false, error: 'Error desconocido' };
+  }
+};
+
+/**
+ * Obtiene todos los representantes de una cooperativa específica.
  * @param socioID - El ID de la cooperativa para la que se desean obtener los representantes.
  * @returns Una lista de representantes o un error si la consulta falla.
  */
@@ -95,7 +164,7 @@ export const obtenerMovimiento = async (movimientoID: string) => {
       .from('transacciones') // Tabla principal
       .select('transaccionid, socios(nombre), representantes(nombre), tipo, monto, fecha, estado, descripcion')
       .eq('estado', '1')
-      .eq('transaccionid', movimientoID)
+      .eq('transaccionid', movimientoID);
 
     
     if (error) {
@@ -122,10 +191,9 @@ export const obtenerMovimiento = async (movimientoID: string) => {
 
 /**
  * Obtiene todos los representantes de una cooperativa específica.
- * @param cooperativaID - El ID de la cooperativa para la que se desean obtener los representantes.
- * @returns Una lista de representantes o un error si la consulta falla.
+ * @param socioID - El ID del socio para la que se desean obtener los movimientos.
+ * @returns Una lista de movimientos o un error si la consulta falla.
  */
-// Función para obtener las transacciones de un socio
 export const obtenerTransaccionesPorSocio = async (socioID: string) => {
   try {
     // Realizar la consulta a la tabla 'transacciones' filtrando por 'socioID'
@@ -133,7 +201,7 @@ export const obtenerTransaccionesPorSocio = async (socioID: string) => {
       .from('transacciones')  // Nombre de la tabla de transacciones
       .select('*')             // Obtener todas las columnas
       .eq('socioid', socioID)
-      .order('fecha', { ascending: false }); // Filtrar por el ID del socio
+      .order('transaccionid', { ascending: false }); // Filtrar por el ID del socio
 
     // Manejo de error
     if (error) {
@@ -143,6 +211,31 @@ export const obtenerTransaccionesPorSocio = async (socioID: string) => {
     return { success: true, data };  // Retornar los datos de las transacciones
   } catch (error: unknown) {
     console.error('Error en obtenerTransaccionesPorSocio:', error instanceof Error ? error.message : 'Error desconocido');
+    return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+  }
+};
+
+/**
+ * Obtiene todos los representantes de una cooperativa específica.
+ * @param representanteID - El ID del representante para la que se desean obtener los movimientos.
+ * @returns Una lista de movimientos o un error si la consulta falla.
+ */
+export const obtenerTransaccionesPorRepresentante = async (representanteID: string) => {
+  try {
+    // Realizar la consulta a la tabla 'transacciones' filtrando por 'socioID'
+    const { data, error } = await supabase
+      .from('transacciones')  
+      .select('transaccionid, socios(nombre), representanteid, monto, tipo, fecha, estado, descripcion')             // Obtener todas las columnas
+      .eq('representanteid', representanteID)
+      .order('transaccionid', { ascending: false }); // Filtrar por el ID del socio
+    // Manejo de error
+    if (error) {
+      throw new Error(`Error al obtener transacciones: ${error.message}`);
+    }
+
+    return { success: true, data };  // Retornar los datos de las transacciones
+  } catch (error: unknown) {
+    console.error('Error en obtenerTransaccionesPorRepresentante:', error instanceof Error ? error.message : 'Error desconocido');
     return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
   }
 };
@@ -323,17 +416,17 @@ export const insertarSocio = async (
 export const actualizarSocio = async (
   socioID: string,
   formData: {
-  nombre: string;
-  cooperativaid: number;
-  genero: string;
-  edad: number;
-  direccion: string;
-  correo: string;
-  telefono: string;
-  montoahorrado: number;
-  empresa: string;
-  salario: number;
-  cedula: string;
+    nombre: string;
+    cooperativaid: number;
+    genero: string;
+    edad: number;
+    direccion: string;
+    correo: string;
+    telefono: string;
+    montoahorrado: number;
+    empresa: string;
+    salario: number;
+    cedula: string;
   }
 ) => {
   try {
@@ -381,14 +474,14 @@ export const actualizarSocio = async (
       .eq("socioid", socioID);
     
     if (error) {
-      throw new Error(`Error al insertar el socio: ${error.message}`);
+      throw new Error(`Error al actualizar el socio: ${error.message}`);
     }
 
     console.log("Socio insertado con éxito:", data);
     return { success: true};
   } catch (error: unknown) {
     console.error(
-      "Error en insertarSocio:",
+      "Error en actualizarSocio:",
       error instanceof Error ? error.message : "Error desconocido"
     );
     return { success: false, error: error instanceof Error ? error.message : "Error desconocido" };
@@ -455,6 +548,140 @@ export const insertarTransaccion = async (
   }
 }
 
+/**
+ * HAce un insert para crear al socio
+ * @param formData - Una list de datos que seran los que se utilizaran para crear el Socio
+ * @returns 
+ */
+export const insertarRepresentante = async (
+  formData: {
+    nombre: string,
+    cooperativaid: number,
+    genero: string,
+    edad: number,
+    direccion: string,
+    correo: string,
+    telefono: string,
+    contrasena: string,
+  }
+) => {
+  try {
+
+    // Preparamos los datos para el insert
+    const {
+      nombre,
+      cooperativaid,
+      genero,
+      edad,
+      direccion,
+      correo,
+      telefono,
+      contrasena,
+    } = formData;
+
+    // Obtenemos la fecha actual
+    const fechaCreacion = await obtenerFechaActual();
+    const generoData =  genero == 'masculino' ? 'M':
+                        genero == 'femenino' ? 'F' :
+                        'X';
+
+    // Realizamos el insert en la tabla socio
+    const { data, error } = await supabase
+      .from("representantes")
+      .insert([
+        {
+          nombre,
+          cooperativaid,
+          genero: generoData,
+          edad,
+          direccion,
+          correo,
+          telefono,
+          contrasena,
+        },
+      ]);
+    
+    if (error) {
+      throw new Error(`Error al insertar el representante: ${error.message}`);
+    }
+
+    console.log("Representante insertado con éxito:", data);
+    return { success: true};
+  } catch (error: unknown) {
+    console.error(
+      "Error en insertarRepresentante:",
+      error instanceof Error ? error.message : "Error desconocido"
+    );
+    return { success: false, error: error instanceof Error ? error.message : "Error desconocido" };
+  }
+}
+
+export const actualizarRepresentante = async (
+  representanteID: string,
+  formData: {
+    nombre: string,
+    cooperativaid: number,
+    genero: string,
+    edad: number,
+    direccion: string,
+    correo: string,
+    telefono: string,
+    contrasena: string,
+  }
+) => {
+  try {
+
+    // Preparamos los datos para el insert
+    const {
+      nombre,
+      cooperativaid,
+      genero,
+      edad,
+      direccion,
+      correo,
+      telefono,
+      contrasena,
+    } = formData;
+
+    // Obtenemos la fecha actual
+    const fechaCreacion = await obtenerFechaActual();
+    const generoData =  genero == 'masculino' ? 'M':
+                        genero == 'femenino' ? 'F' :
+                        'X';
+
+    // Realizamos el insert en la tabla socio
+    const { data, error } = await supabase
+      .from("representantes")
+      .update([
+        {
+          nombre,
+          cooperativaid,
+          genero: generoData,
+          edad,
+          direccion,
+          correo,
+          telefono,
+          contrasena,
+        },
+      ])
+      .eq("representanteid", representanteID);
+    
+    if (error) {
+      throw new Error(`Error al actualizar el representante: ${error.message}`);
+    }
+
+    console.log("Representante actualizo con éxito:", data);
+    return { success: true};
+  } catch (error: unknown) {
+    console.error(
+      "Error en actualizarRepresentante:",
+      error instanceof Error ? error.message : "Error desconocido"
+    );
+    return { success: false, error: error instanceof Error ? error.message : "Error desconocido" };
+  }
+}
+
+
 export async function obtenerSocios() {
     const { data, error } = await supabase
     .from('socios')
@@ -468,7 +695,6 @@ export async function obtenerRepresentantes() {
     const { data, error } = await supabase
     .from('representantes')
     .select()
-    console.log(data, error);
     return data!.map(e => ({
        ...e,id: e.socioid,
     }));
