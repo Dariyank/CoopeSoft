@@ -1,24 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function LandingPage() {
   return (
     <div className="bg-gray-100">
-      {/* Header */}
-      <header className="flex justify-between items-center p-4 bg-white shadow-md">
-        <div className="flex items-center">
-          <Image src="/img/Logo.png" alt="Coopesoft Logo" width={50} height={50} />
-          <span className="ml-2 text-xl font-bold text-[#00755D]">Coopesoft</span>
-        </div>
-        <nav className="flex items-center">
-          <span className="text-gray-500 mr-4">Para ordenar tu cooperativa</span>
-          <Link href="/login">
-            <button className="bg-[#00755D] text-white px-4 py-2 rounded-md hover:bg-[#005844]">
-              Iniciar Sesión
-            </button>
-          </Link>
-        </nav>
-      </header>
 
       {/* Hero Section */}
       <section className="relative flex items-center justify-center h-[70vh] bg-gray-200">
