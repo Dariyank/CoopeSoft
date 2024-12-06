@@ -59,7 +59,24 @@ const Navbar = () => {
           >
             Para ordenar tu cooperativa
           </div>
-        ) : (
+        ) : pathname ==="/Representante" ? (
+          // Botones específicos para la página '/Representante'
+          <div className="flex items-center space-x-6">
+            <Link
+              href="/BuscarSocio"
+              className="text-[#00755D] font-semibold hover:text-[#444444] transition-colors"
+            >
+              Buscar Socio
+            </Link>
+            <Link
+              href="/RegistrarSocio"
+              className="text-[#00755D] font-semibold hover:text-[#444444] transition-colors"
+            >
+              Registrar Socio
+            </Link>
+          </div>
+          ) : (
+            // Renderizar el resto de los enlaces en el navbar
           links.map((link) => (
             <li
               key={link.href}
@@ -86,6 +103,19 @@ const Navbar = () => {
               Iniciar Sesión
             </button>
           </Link>
+        ) : pathname === "/Representante" ? (
+          // Sección específica para la página '/Representante'
+          <Link href="/LandingPage" className="flex items-center space-x-[8px] text-[#00755D]">
+          {/* Contenedor de textos (Juana Delgado y Cerrar Sesión) */}
+          <div className="flex flex-col items-end">
+            <span className="font-semibold">Juana Delgado</span>
+            <span className="text-[12px] text-gray-600 hover:text-gray-800">
+              Cerrar Sesión
+            </span>
+          </div>
+          {/* Ícono de usuario */}
+          <BiUserCircle size={35} className="flex-shrink-0" />
+        </Link>
         ) : (
           pathname !== "/loginPage" && (
             <Link href="/LandingPage" className="flex items-center space-x-[8px] text-[#00755D]">
