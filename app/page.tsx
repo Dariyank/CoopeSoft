@@ -1,3 +1,4 @@
+'use client';
 import { FaDollarSign } from "react-icons/fa6";
 import { FaUsers } from "react-icons/fa";
 import { FaChartLine } from "react-icons/fa6";
@@ -5,7 +6,7 @@ import { FaMoneyBill } from "react-icons/fa6";
 import InfoCard from './Dashboard/InfoCard';
 import Charts from './Dashboard/Charts';
 
-export default function Home() {
+const Dashboard = () => {
   return (
     <div>
       <div className="px-6 uppercase font-extrabold text-[30px] text-[#00755D]"><h3>Dashboard</h3></div>
@@ -19,3 +20,4 @@ export default function Home() {
     </div>
   );
 }
+export default Dashboard;

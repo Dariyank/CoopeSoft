@@ -42,10 +42,12 @@ const providers = [RepresentanteProvider, SociosProvider, SocioProvider, Movimie
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = useCurrentPath(); // Using the custom hook to get the current pathname
   const isHomePage = pathname === '/';
+  const isLoginPage = pathname === '/loginPage';
+  const isLandingPage = pathname === '/LandingPage';
   return (
     <html lang="es">
       <head />
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${isLoginPage ? "bg-gray-100" : "bg-white"} ${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ProvidersWrapper providers={providers}>
           <NavBar />
           <Head>
@@ -53,7 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <meta name="description" content={"Coopesoft"} />
           </Head>
           <main>
-            {!isHomePage && ( // Solo renderiza el botón si no estamos en la página principal
+            {!isHomePage && !isLandingPage && ( // Solo renderiza el botón si no estamos en la página principal
               <button
                 onClick={() => window.history.back()}
                 className="text-[#00755D] hover:text-[#e6be31] pl-6"
@@ -68,3 +70,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+
