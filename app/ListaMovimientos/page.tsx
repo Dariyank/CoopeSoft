@@ -61,7 +61,7 @@ const ListaMovimientos: React.FC =  () => {
   // Función para ordenar los datos
   const handleSort = (criteria: "asc" | "desc" | "id") => {
     const sorted = [...movimientos].sort((a, b) => {
-      if (criteria === "id") return a.id.localeCompare(b.id);
+      if (criteria === "id") return a.transaccionid.localeCompare(b.transaccionid);
       if (criteria === "asc") return a.monto - b.monto;
       return b.monto - a.monto;
     });
@@ -177,17 +177,17 @@ const ListaMovimientos: React.FC =  () => {
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
               >
-                <td className="p-2 border border-gray-300">{movimiento.id}</td>
-                <td className="p-2 border border-gray-300">{movimiento.tipoMovimiento}</td>
-                <td className="p-2 border border-gray-300">{movimiento.nombre}</td>
-                <td className="p-2 border border-gray-300">{movimiento.representante}</td>
-                <td className="p-2 border border-gray-300">{movimiento.fechaRealizada}</td>
+                <td className="p-2 border border-gray-300">{movimiento.transaccionid}</td>
+                <td className="p-2 border border-gray-300">{movimiento.tipo}</td>
+                <td className="p-2 border border-gray-300">{movimiento.socioid}</td>
+                <td className="p-2 border border-gray-300">{movimiento.representanteid}</td>
+                <td className="p-2 border border-gray-300">{movimiento.fecha}</td>
                 <td className="p-2 border border-gray-300">{movimiento.monto}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href={`/ListaMovimientos/${movimiento.id}`}
+                    href={`/ListaMovimientos/${movimiento.transaccionid}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
-                    onClick={() => handleSaveIdInCookies(movimiento.id)} 
+                    onClick={() => handleSaveIdInCookies(movimiento.transaccionid)} 
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>

@@ -1,48 +1,54 @@
 "use client";
 
+import { 
+  obtenerMovimiento
+} from '@/app/actions'
+
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { BsPencilSquare } from "react-icons/bs";
 import Cookies from "js-cookie";
-import { Movimientos } from "../../Context/movimientoContext";
+import { TransaccionExtendida } from "../../Context/tramovimientoContext";
 // import { useMovimientos } from "@/app/uses/useMovimientos"; // Importa el hook del contexto
 
 
 
 const DetalleMovimientos = () => {
 
-  const [movimiento, setMovimiento] = useState<Movimientos | null>(null);
-  const [movimientos, setMovimientos] = useState<Movimientos[]>([]); // Estado para la lista completa de movimientos
+  const [movimiento, setMovimiento] = useState<TransaccionExtendida | null>(null);
+  // const [movimientos, setMovimientos] = useState<Movimientos[]>([]); // Estado para la lista completa de movimientos
   // const { movimientos, setMovimientos } = useMovimientos()!; // Usamos el contextoconst [search, setSearch] = useState(""); 
   // const [search] = useState("");
 
   // useEffect para cargar los datos del archivo JSON
   useEffect(() => {
+    limpiarDatos();
     const fetchData = async () => {
-      try {
-        const response = await fetch('/movimientos.json');
-        const data = await response.json();
-        setMovimientos(data); // Cargar los datos en el estado
-      } catch (error) {
-        console.error("Error al cargar los datos:", error);
+      const movimientoID = Cookies.get("movimientoId");
+      
+      if(movimientoID){
+        const { success, data, error } = await obtenerMovimiento(movimientoID);
+        
+        if (success && data) {
+
+          console.log(data[0])
+          const movimiento: TransaccionExtendida = {
+            transaccionid: data[0].transaccionid,
+            nombresocio: data[0].socios.length > 0 ? data[0].socios[0].nombre : '', // Acceder al nombre de socio
+            nombrerepresentante: data[0].representantes.length > 0 ? data[0].representantes[0].nombre : '', // Acceder al nombre de representante
+            tipo: data[0].tipo,
+            monto: data[0].monto,
+            fecha: data[0].fecha,
+            estado: data[0].estado,
+            descripcion: data[0].descripcion,
+          };
+          setMovimiento(movimiento);
+        } else {
+          console.error('Error fetching socio:', error || 'Invalid data');
+        }
       }
     };
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    const movimientoId = Cookies.get("movimientoId"); // Leer el ID desde las cookies
-
-    if (movimientoId) {
-      const foundMovimiento = movimientos.find((m: Movimientos) => m.id === movimientoId);
-      if (foundMovimiento) {
-        setMovimiento(foundMovimiento);
-      } else {
-        setMovimiento(null);
-      }
-    }
-  }, [movimientos]);
 
   // Filtrar los datos según la búsqueda
   // const filteredMovimientos = movimientos.filter((movimiento) =>
@@ -51,9 +57,16 @@ const DetalleMovimientos = () => {
   //   )
   // );
 
+  const limpiarDatos = () => {
+    setMovimiento(null);  // Limpia los datos del socio
+    // setMovimientos([]);  // Limpia los movimientos
+  };
+
   // Si el movimiento existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
-  const idMovimiento= movimiento ? movimiento.id : "Movimiento no encontrado";
+  const idMovimiento= movimiento ? movimiento.transaccionid : "Movimiento no encontrado";
+
   if (!movimiento) return <div>Cargando...</div>;
+
   return (
     <div>
       <div className="px-6 text-[#00755D]">
@@ -68,25 +81,19 @@ const DetalleMovimientos = () => {
             <div className="flex-1">
               <div className="flex justify-between ">
                 <h2 className="font-bold text-[24px] text-[#00755D]">
-                  {idMovimiento}
+                  Movimiento #{idMovimiento}
                 </h2>
-                <Link
-                    href="/movimientos"
-                    className="text-[#00755D] hover:text-[#e6be31]"
-                  >
-                    <BsPencilSquare className="inline-block" size={20} />
-                </Link>
               </div>
               {movimiento ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="px-2">
-                      <p className="text-sm"><strong>Nombre: </strong>{movimiento.nombre}</p>
-                      <p className="text-sm"><strong>Tipo: </strong>{movimiento.tipoMovimiento}</p>
-                      <p className="text-sm"><strong>Fecha: </strong>{movimiento.fechaRealizada}</p>
+                      <p className="text-sm"><strong>Nombre: </strong>{movimiento.nombresocio}</p>
+                      <p className="text-sm"><strong>Tipo: </strong>{movimiento.tipo}</p>
+                      <p className="text-sm"><strong>Fecha: </strong>{movimiento.fecha}</p>
                     </div>
                     <div className="px-2">
                       <p className="text-sm"><strong>Estado: </strong>{movimiento.estado} </p>
-                      <p className="text-sm"><strong>Representante: </strong>{movimiento.representante} </p>
+                      <p className="text-sm"><strong>Representante: </strong>{movimiento.nombrerepresentante} </p>
                       <p className="text-sm"><strong>Monto: </strong>{movimiento.monto}</p>
                     </div>
                     <div className="px-2">

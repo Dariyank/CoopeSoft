@@ -5,20 +5,22 @@ import React, { createContext, useState, PropsWithChildren, Dispatch, SetStateAc
 // Define la interfaz para los representantes
 
 export interface Prestamo {
-  id: string;
-  nombre: string;
-  email: string;
-  diaSolicitud: string;
-  montoPrestado: number;
-  estado:string;
-  tasaInteres: GLfloat;
+  prestamoid: string;
+  socioid: string;
+  representanteid: string;
+  tiempo: number;
+  totalprestado: number;
+  fecha: string;
+  montomensual: number;
+  totaloriginal: number;
+  taza: number;
 }
 
 
 // Define la interfaz para el contexto
 interface PrestamoContextType {
-  prestamos: Prestamo[];
-  setPrestamos: Dispatch<SetStateAction<Prestamo[]>>;
+  prestamo: Prestamo | null;
+  setPrestamo: Dispatch<SetStateAction<Prestamo | null>>;
 }
 
 // Crea el contexto con un valor inicial
@@ -26,10 +28,10 @@ export const PrestamoContext = createContext<PrestamoContextType | undefined>(un
 
 // Define el proveedor
 export const PrestamoProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
+  const [prestamo, setPrestamo] = useState<Prestamo | null>(null); // Inicialmente no hay socio
 
   return (
-    <PrestamoContext.Provider value={{ prestamos, setPrestamos }}>
+    <PrestamoContext.Provider value={{ prestamo, setPrestamo }}>
       {children}
     </PrestamoContext.Provider>
   );
