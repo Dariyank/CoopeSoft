@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { IoLogoAngular } from "react-icons/io";
 import { BiUserCircle } from "react-icons/bi";
 import React from "react";
 import Link from "next/link";

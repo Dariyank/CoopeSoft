@@ -1,20 +1,15 @@
 "use client";
 
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { 
-  crearCooperativa,
-  obtenerCooperativa,
-  LoginUsuario
+  crearCooperativa
 } from '@/app/actions'
 import Cookies from 'js-cookie';
 
 const LoginPage = () => {
   const router = useRouter()
-  const [showModal, setShowModal] = useState(false);  // Estado para mostrar el modal
-  const [modalMessage, setModalMessage] = useState(""); //
 
     const [formValuesCrear, setFormValuesCrear] = useState({
       correo: '',
@@ -79,11 +74,6 @@ const LoginPage = () => {
     const handleChangeIniciar = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       const { id, value } = e.target;
       setFormValuesIniciar((prevData) => ({ ...prevData, [id]: value }));
-    };
-    
-    
-    const handleSaveIdInCookies = (correo: string) => {
-      Cookies.set('coopeCorreo', correo, { expires: 7 })
     };
 
     // const handleObtener = async () => {

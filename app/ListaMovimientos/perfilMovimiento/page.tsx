@@ -30,10 +30,8 @@ const DetalleMovimientos = () => {
         if (success && data) {
           const movimiento: TransaccionExtendida = {
             transaccionid: data[0].transaccionid,
-            //@ts-ignore
-            nombresocio: data[0].socios.nombre, // Acceder al nombre de socio
-            //@ts-ignore
-            nombrerepresentante: data[0].representantes.nombre, // Acceder al nombre de representante
+            nombresocio: String(data[0].socios), // Acceder al nombre de socio
+            nombrerepresentante: String(data[0].representantes), // Acceder al nombre de representante
             tipo: data[0].tipo,
             monto: data[0].monto,
             fecha: data[0].fecha,

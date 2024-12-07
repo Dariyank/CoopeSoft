@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 import { createClient } from '@supabase/supabase-js';
 import {Prestamo } from '@/app/Context/prestamoContext'
@@ -16,53 +17,6 @@ async function obtenerFechaActual() {
   const día = String(hoy.getDate()).padStart(2, '0');
   return `${año}-${mes}-${día}`;
 }
-
-//Login
-// lib/auth.ts
-
-type LoginRequest = {
-  correo: string;
-  contrasena: string;
-};
-
-type LoginResponse = {
-  user: any;
-  correo: string;
-  contrasena: string;
-};
-
-export const LoginUsuario = async ({ correo, contrasena }: LoginRequest): Promise<LoginResponse> => {
-  try {
-    const { data: cooperativaData } = await supabase
-      .from('cooperativas')
-      .select('*')
-      .eq('correo', correo)
-      .eq('contrasena', contrasena)
-      .single();
-
-    const { data: representanteData } = await supabase
-      .from('representantes')
-      .select('*')
-      .eq('correo', correo)
-      .eq('contrasena', contrasena)
-      .single();
-
-    console.log(cooperativaData);
-
-    let user = (cooperativaData ? cooperativaData : representanteData);
-    let role = cooperativaData ? "cooperativa" : "representante";
-
-    if (!user) throw new Error('Credenciales incorrectas');
-
-    Cookies.set('role', role, { expires: 7 });
-
-    return { user, correo, contrasena };
-  } catch (err) {
-    console.error('Error en el login:', err);
-    throw err;
-  }
-};
-
 
 export const obtenerCooperativa = async (correo: string) => {
   try {
@@ -759,10 +713,10 @@ export const insertarTransaccion = async (
       .eq("socioid", socioID);
     
     if (error) {
-      throw new Error(`Error al crear el prestamo: ${error.message}`);
+      throw new Error(`Error al crear el transaccion: ${error.message}`);
     }
 
-    console.log("Prestamo creado con éxito:", data);
+    console.log("Transaccion creado con éxito:", data);
     return { success: true};
   } catch (error: unknown) {
     console.error(
