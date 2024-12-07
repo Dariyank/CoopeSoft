@@ -29,20 +29,16 @@ const Navbar = () => {
         className="flex-shrink-0 w-[150px] text-xl font-bold"
         style={{ color: "#00755D" }}
       >
-        <Link href={pathname === "/LandingPage" ? "/" : "/"}>
-          {pathname === "/LandingPage" || pathname === "/loginPage" ? (
-            <div className="flex items-center space-x-2">
-              <Image
-                src="/img/Logo.png"
-                alt="Coopesoft Logo"
-                width={50}
-                height={50}
-              />
-              <span className="text-[#00755D] text-lg font-bold">Coopesoft</span>
+        <Link href={pathname == "/" ? "/" : "/Dashboard"}>
+          <div className="flex items-center space-x-2">
+            <Image
+              src="/img/Logo.png"
+              alt="Coopesoft Logo"
+              width={50}
+              height={50}
+            />
+            <span className="text-[#00755D] text-lg font-bold">Coopesoft</span>
           </div>
-          ) : (
-            <IoLogoAngular size={35} /> // Logo para otras páginas
-          )}
         </Link>
       </div>
 
@@ -52,7 +48,7 @@ const Navbar = () => {
         style={{ color: "#00755D" }}
       >
         {/* Mostrar texto en lugar de los links cuando pathname es '/LandingPage' */}
-        {pathname === "/LandingPage" || pathname === "/loginPage" ? (
+        {pathname === "/" || pathname === "/loginPage" ? (
           <div
             className="w-full text-center text-[16px] font-semibold"
             style={{ color: "#00755D" }}
@@ -97,28 +93,14 @@ const Navbar = () => {
 
        {/* User Icon Section */}
        <div className="flex-shrink-0 w-[150px] text-sm font-semibold text-[12px] flex items-center h-[40px] justify-end">
-        {pathname === "/LandingPage" ? (
+        {pathname === "/" ? (
           <Link href="/loginPage" className="flex items-center space-x-[3px]">
             <button className="bg-[#00755D] text-white px-4 py-2 rounded-md hover:bg-[#005844]">
               Iniciar Sesión
             </button>
           </Link>
-        ) : pathname === "/Representante" ? (
-          // Sección específica para la página '/Representante'
-          <Link href="/LandingPage" className="flex items-center space-x-[8px] text-[#00755D]">
-          {/* Contenedor de textos (Juana Delgado y Cerrar Sesión) */}
-          <div className="flex flex-col items-end">
-            <span className="font-semibold">Juana Delgado</span>
-            <span className="text-[12px] text-gray-600 hover:text-gray-800">
-              Cerrar Sesión
-            </span>
-          </div>
-          {/* Ícono de usuario */}
-          <BiUserCircle size={35} className="flex-shrink-0" />
-        </Link>
         ) : (
-          pathname !== "/loginPage" && (
-            <Link href="/LandingPage" className="flex items-center space-x-[8px] text-[#00755D]">
+            <Link href="/" className="flex items-center space-x-[8px] text-[#00755D]">
             {/* Contenedor de textos (Coop. Herrera y Cerrar Sesión) */}
             <div className="flex flex-col items-end">
               <span className="font-semibold">Coop. Herrera</span>
@@ -127,7 +109,6 @@ const Navbar = () => {
             {/* Ícono de usuario */}
             <BiUserCircle size={35} className="flex-shrink-0" />
           </Link>
-          )
         )}
       </div>
     </nav>

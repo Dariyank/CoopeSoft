@@ -35,10 +35,6 @@ const RegistrarSocio = () => {
       alert('La edad debe ser un número positivo.');
       return false;
     }
-    if (isNaN(Number(formData.cooperativaid)) || Number(formData.cooperativaid) <= 0) {
-      alert('El ID de la cooperativa debe ser un número positivo.');
-      return false;
-    }
     if (!/^\S+@\S+\.\S+$/.test(String(formData.correo))) {
       alert('El correo no tiene un formato válido.');
       return false;

@@ -42,7 +42,7 @@ const DetallesSocio = () => {
           console.error('Error fetching socio:', error || 'Invalid data');
         }
       }
-    };
+  };
 
     if(socio)
       console.log(typeof socio.socioid);
@@ -83,7 +83,7 @@ const DetallesSocio = () => {
   }, [setPrestamo]);
 
    // Función para guardar el id del socio en las cookies
-   const handleSaveMovInCookies = (id: string) => {
+  const handleSaveMovInCookies = (id: string) => {
     Cookies.set('movimientoId', id, { expires: 7 }); // Guardamos el ID en cookies, con una expiración de 7 días
   };
 
@@ -270,7 +270,7 @@ const DetallesSocio = () => {
                   <td className="p-2 border border-gray-300">{movimiento.descripcion}</td>
                   <td className="p-2 border border-gray-300 text-center">
                     <Link
-                      href={`../../ListaMovimientos/${movimiento.transaccionid}`}
+                      href={`../../ListaMovimientos/perfilMovimiento`}
                       className="text-[#00755D] hover:text-[#e6be31]"
                       onClick={() => handleSaveMovInCookies(movimiento.transaccionid)} // Guardamos el id en cookies al hacer clic
                     >

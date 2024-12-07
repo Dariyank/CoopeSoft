@@ -30,14 +30,17 @@ const DetalleMovimientos = () => {
         if (success && data) {
           const movimiento: TransaccionExtendida = {
             transaccionid: data[0].transaccionid,
-            nombresocio: data[0].socios.length > 0 ? data[0].socios[0].nombre : '', // Acceder al nombre de socio
-            nombrerepresentante: data[0].representantes.length > 0 ? data[0].representantes[0].nombre : '', // Acceder al nombre de representante
+            //@ts-ignore
+            nombresocio: data[0].socios.nombre, // Acceder al nombre de socio
+            //@ts-ignore
+            nombrerepresentante: data[0].representantes.nombre, // Acceder al nombre de representante
             tipo: data[0].tipo,
             monto: data[0].monto,
             fecha: data[0].fecha,
             estado: data[0].estado,
             descripcion: data[0].descripcion,
           };
+          console.log(movimiento);
           setMovimiento(movimiento);
         } else {
           console.error('Error fetching socio:', error || 'Invalid data');

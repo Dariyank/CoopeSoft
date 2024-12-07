@@ -1,9 +1,11 @@
 'use server'
 import { createClient } from '@supabase/supabase-js';
 import {Prestamo } from '@/app/Context/prestamoContext'
-import { TransaccionExtendida } from "@/app/Context/tramovimientoContext";
+import Cookies from "js-cookie";
 
 const supabase = createClient("https://akufmgyltmzzfypsqmll.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrdWZtZ3lsdG16emZ5cHNxbWxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMzNDU0MDksImV4cCI6MjA0ODkyMTQwOX0.kb_JHFPDDkh2VSQ9z3FvPRQ_DEpgh1ryGYZQvqjdh84")
+
+// if(Cookies.get('userType'))
 
 
 // Función para obtener la fecha actual en formato AAAA-MM-DD
@@ -13,6 +15,140 @@ async function obtenerFechaActual() {
   const mes = String(hoy.getMonth() + 1).padStart(2, '0'); // Meses de 0 a 11, ajustado +1
   const día = String(hoy.getDate()).padStart(2, '0');
   return `${año}-${mes}-${día}`;
+}
+
+//Login
+// lib/auth.ts
+
+type LoginRequest = {
+  correo: string;
+  contrasena: string;
+};
+
+type LoginResponse = {
+  user: any;
+  correo: string;
+  contrasena: string;
+};
+
+export const LoginUsuario = async ({ correo, contrasena }: LoginRequest): Promise<LoginResponse> => {
+  try {
+    const { data: cooperativaData } = await supabase
+      .from('cooperativas')
+      .select('*')
+      .eq('correo', correo)
+      .eq('contrasena', contrasena)
+      .single();
+
+    const { data: representanteData } = await supabase
+      .from('representantes')
+      .select('*')
+      .eq('correo', correo)
+      .eq('contrasena', contrasena)
+      .single();
+
+    console.log(cooperativaData);
+
+    let user = (cooperativaData ? cooperativaData : representanteData);
+    let role = cooperativaData ? "cooperativa" : "representante";
+
+    if (!user) throw new Error('Credenciales incorrectas');
+
+    Cookies.set('role', role, { expires: 7 });
+
+    return { user, correo, contrasena };
+  } catch (err) {
+    console.error('Error en el login:', err);
+    throw err;
+  }
+};
+
+
+export const obtenerCooperativa = async (correo: string) => {
+  try {
+    // Realizar la consulta para obtener los representantes de la cooperativa
+    const { data, error } = await supabase
+      .from('cooperativa')  // Nombre de la tabla de representantes
+      .select('*')             // Obtener todas las columnas, ajusta según necesites
+      .eq('correo', correo)
+      .single();  // Filtrar por el ID de la cooperativa
+
+    if (error) {
+      throw new Error(`Error al obtener socios: ${error.message}`);
+    }
+
+    // Si no hay representantes, retornar un mensaje vacío
+    if (data?.length === 0) {
+      return { success: false, message: 'No se encontraron socios.' };
+    }
+
+    return { success: true, data };
+  } catch (error: unknown) {
+    // Manejo de errores
+    if (error instanceof Error) {
+      console.error('Error en obtenerSocio:', error.message);
+      return { success: false, error: error.message };
+    }
+    console.error('Error desconocido:', error);
+    return { success: false, error: 'Error desconocido' };
+  }
+};
+
+
+/**
+ * HAce un insert para crear al socio
+ * @param formData - Una list de datos que seran los que se utilizaran para crear el Socio
+ * @returns 
+ */
+export const crearCooperativa = async (
+  formData: {
+    nombre: string;
+    correo: string;
+    rnc: string
+    localizacion: string;
+    contacto: string;
+    contrasena: string
+  }
+) => {
+  try {
+
+    // Preparamos los datos para el insert
+    const {
+      nombre,
+      correo,
+      rnc,
+      localizacion,
+      contacto,
+      contrasena,
+    } = formData;
+
+    // Realizamos el insert en la tabla socio
+    const { data, error } = await supabase
+      .from("cooperativas")
+      .insert([
+        {
+          nombre,
+          correo,
+          rnc,
+          localizacion,
+          contacto,
+          contrasena,
+        },
+      ])
+      .select("cooperativaid, nombre, correo, rnc, localizacion, contacto, contrasena");;
+    
+    if (error) {
+      throw new Error(`Error al registrar cooperativa: ${error.message}`);
+    }
+
+    return { success: true, data};
+  } catch (error: unknown) {
+    console.error(
+      "Error en crearCooperativa:",
+      error instanceof Error ? error.message : "Error desconocido"
+    );
+    return { success: false, error: error instanceof Error ? error.message : "Error desconocido" };
+  }
 }
 
 /**
@@ -191,6 +327,41 @@ export const obtenerMovimiento = async (movimientoID: string) => {
 
 /**
  * Obtiene todos los representantes de una cooperativa específica.
+ * @param socioID - El ID de la cooperativa para la que se desean obtener los representantes.
+ * @returns Una lista de representantes o un error si la consulta falla.
+ */
+export const obtenerPrestamo = async (movimientoID: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('prestamos') // Tabla principal
+      .select('prestamoid, socioid, socios(nombre, correo), representanteid, representantes(nombre),tiempo, totalprestado, totaloriginal, taza, fecha, montomensual')
+      .eq('prestamoid', movimientoID);
+
+    
+    if (error) {
+      throw new Error(`Error al obtener movimiento ${error.message}`);
+    }
+
+    // Si no hay representantes, retornar un mensaje vacío
+    if (data == null || data == undefined) {
+      return { success: false };
+    }
+
+    // Asumiendo que data tiene al menos un elemento, obtener el primer movimiento
+    return { success: true, data };
+  } catch (error: unknown) {
+    // Manejo de errores
+    if (error instanceof Error) {
+      console.error('Error en obtenerMovimiento:', error.message);
+      return { success: false, error: error.message };
+    }
+    console.error('Error desconocido:', error);
+    return { success: false, error: 'Error desconocido' };
+  }
+};
+
+/**
+ * Obtiene todos los representantes de una cooperativa específica.
  * @param socioID - El ID del socio para la que se desean obtener los movimientos.
  * @returns Una lista de movimientos o un error si la consulta falla.
  */
@@ -260,6 +431,57 @@ export const obtenerPrestamosPorSocio = async (socioID: string) => {
     return { success: true, data };  // Retornar los datos de las transacciones
   } catch (error: unknown) {
     console.error('Error en obtenerPrestamosPorSocio:', error instanceof Error ? error.message : 'Error desconocido');
+    return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+  }
+};
+
+
+/**
+ * Obtiene el prestamo de un socio en específico.
+ * @param formDataInsert - Estos son los valores a insertar en la tabla.
+ * @returns 
+ */
+export const obtenerPrestamosPorCooperativa = async (cooperativaId: string) => {
+  // Simula la llamada a una API para obtener los préstamos de un socio por su ID
+  try {
+    const { data, error } = await supabase
+    .from('prestamos')
+    .select('prestamoid, socioid, socios(nombre, correo), totaloriginal, taza, fecha') 
+    .eq('cooperativaid', cooperativaId)
+    .order('prestamoid', { ascending: true });
+
+    if (error) {
+      throw new Error(`Error al obtener prestamos: ${error.message}`);
+    }
+
+    return { success: true, data };  // Retornar los datos de las transacciones
+  } catch (error: unknown) {
+    console.error('Error en obtenerPrestamosPorCooperativa:', error instanceof Error ? error.message : 'Error desconocido');
+    return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
+  }
+};
+
+/**
+ * Obtiene el prestamo de un socio en específico.
+ * @param formDataInsert - Estos son los valores a insertar en la tabla.
+ * @returns 
+ */
+export const obtenerTrasaccionesPorCooperativa = async (cooperativaId: string) => {
+  // Simula la llamada a una API para obtener los préstamos de un socio por su ID
+  try {
+    const { data, error } = await supabase
+    .from('transacciones')
+    .select('*') 
+    .eq('cooperativaid', cooperativaId)
+    .order('prestamoid', { ascending: true });
+
+    if (error) {
+      throw new Error(`Error al obtener transacciones: ${error.message}`);
+    }
+
+    return { success: true, data };  // Retornar los datos de las transacciones
+  } catch (error: unknown) {
+    console.error('Error en obtenerTrasaccionesPorCooperativa:', error instanceof Error ? error.message : 'Error desconocido');
     return { success: false, error: error instanceof Error ? error.message : 'Error desconocido' };
   }
 };
@@ -497,6 +719,7 @@ export const insertarTransaccion = async (
     tipo: string,
     estado: string,
     descripcion: string
+    cooperativaid: number
   }
 ) => {
   try {
@@ -512,6 +735,7 @@ export const insertarTransaccion = async (
       tipo,
       estado = 1,
       descripcion,
+      cooperativaid = 1
     } = formData;
 
     const prestamoid = rawPrestamoid === 0 ? null : rawPrestamoid;
@@ -529,6 +753,7 @@ export const insertarTransaccion = async (
           fecha:  fechaCreacion,
           estado,
           descripcion,
+          cooperativaid
         }
       ])
       .eq("socioid", socioID);
@@ -681,39 +906,3 @@ export const actualizarRepresentante = async (
   }
 }
 
-
-export async function obtenerSocios() {
-    const { data, error } = await supabase
-    .from('socios')
-    .select()
-    return data!.map(e => ({
-       ...e,id: e.socioid,
-    }));
-}
-
-export async function obtenerRepresentantes() {
-    const { data, error } = await supabase
-    .from('representantes')
-    .select()
-    return data!.map(e => ({
-       ...e,id: e.socioid,
-    }));
-}
-
-export async function obtenerPrestamos() {
-    const { data, error } = await supabase
-    .from('prestamos')
-    .select()
-    return data!.map(e => ({
-       ...e,id: e.socioid,
-    }));
-}
-
-export async function obtenerTransacciones() {
-    const { data, error } = await supabase
-    .from('prestamos')
-    .select()
-    return data!.map(e => ({
-       ...e,id: e.socioid,
-    }));
-}

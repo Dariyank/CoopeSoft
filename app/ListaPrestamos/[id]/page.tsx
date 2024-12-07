@@ -5,44 +5,55 @@ import Link from "next/link";
 import { BsPencilSquare } from "react-icons/bs";
 import Cookies from "js-cookie";
 import { Prestamo } from "../../Context/prestamoContext";
+import { usePrestamo } from '@/app/uses/usePrestamo'
+import { obtenerPrestamo } from "@/app/actions";
 // import { useMovimientos } from "@/app/uses/useMovimientos"; // Importa el hook del contexto
 
 
 
 const DetallePrestamos = () => {
 
-  const [prestamo, setPrestamo] = useState<Prestamo | null>(null);
-  const [prestamos, setPrestamos] = useState<Prestamo[]>([]); // Estado para la lista completa de movimientos
-  // const { movimientos, setMovimientos } = useMovimientos()!; // Usamos el contextoconst [search, setSearch] = useState(""); 
-  // const [search] = useState("");
+  const {prestamo, setPrestamo} = usePrestamo(); // Estado para la lista completa de movimientos
 
   // useEffect para cargar los datos del archivo JSON
   useEffect(() => {
+    limpiarDatos();
     const fetchData = async () => {
-      try {
-        const response = await fetch('/prestamos.json');
-        const data = await response.json();
-        setPrestamos(data); // Cargar los datos en el estado
-      } catch (error) {
-        console.error("Error al cargar los datos:", error);
+      const socioID = Cookies.get("socioId");
+      
+      if (socioID) {
+        const { success, data, error } = await obtenerPrestamo(socioID);
+
+        console.log(data);
+  
+        if (success && Array.isArray(data) && data.length > 0) {
+          // Tomamos el primer elemento del array y transformamos
+          const item = data[0]; // Asegúrate de manejar casos donde `data` tiene más de un elemento
+          
+          const transformedData: Prestamo = {
+            prestamoid: item.prestamoid,
+            //@ts-ignore
+            socioid: item.socios.nombre || "Socio no disponible",
+            //@ts-ignore
+            representanteid: item.representantes.nombre || "Socio no disponible",
+            tiempo: item.tiempo || 0, // Asigna un valor predeterminado si falta
+            totalprestado: item.totalprestado || 0,
+            fecha: item.fecha || "Fecha no disponible",
+            montomensual: item.montomensual || 0,
+            totaloriginal: item.totaloriginal || 0,
+            taza: item.taza || 0,
+          };
+  
+          setPrestamo(transformedData);
+        } else {
+          console.error('Error fetching socio:', error || 'Invalid data');
+        }
       }
     };
-
     fetchData();
   }, []);
+  
 
-  useEffect(() => {
-    const prestamoId = Cookies.get("prestamoId"); // Leer el ID desde las cookies
-
-    if (prestamoId) {
-      const foundPrestamo = prestamos.find((p: Prestamo) => p.id === prestamoId);
-      if (foundPrestamo) {
-        setPrestamo(foundPrestamo);
-      } else {
-        setPrestamo(null);
-      }
-    }
-  },[prestamos]);
 
   // Filtrar los datos según la búsqueda
   // const filteredMovimientos = movimientos.filter((movimiento) =>
@@ -52,7 +63,14 @@ const DetallePrestamos = () => {
   // );
 
   // Si el movimiento existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
-  const idPrestamo= prestamo ? prestamo.id : "Prestamo no encontrado";
+
+  
+  const limpiarDatos = () => {
+    setPrestamo(null);  // Limpia los datos del socio
+  };
+
+  const idPrestamo= prestamo ? prestamo.prestamoid : "Prestamo no encontrado";
+
   if (!prestamo) return <div>Cargando...</div>;
   return (
     <div>
@@ -68,29 +86,29 @@ const DetallePrestamos = () => {
             <div className="flex-1">
               <div className="flex justify-between ">
                 <h2 className="font-bold text-[24px] text-[#00755D]">
-                  {idPrestamo}
+                  Prestamo #{idPrestamo}
                 </h2>
-                <Link
-                    href="/movimientos"
-                    className="text-[#00755D] hover:text-[#e6be31]"
-                  >
-                    <BsPencilSquare className="inline-block" size={20} />
-                </Link>
               </div>
               {prestamo ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="px-2">
-                      <p className="text-sm"><strong>Nombre: </strong>{prestamo.nombre}</p>
-                      <p className="text-sm"><strong>Monto Prestado: </strong>{prestamo.montoPrestado}</p>
-                      <p className="text-sm"><strong>Representante: </strong>{prestamo.tasaInteres} </p>
+                      <p className="text-sm"><strong>Nombre: </strong>{prestamo.socioid}</p>
+                      <p className="text-sm"><strong>Fecha: </strong>{prestamo.fecha}</p>
+                      <p className="text-sm"><strong>Representante: </strong>{prestamo.representanteid} </p>
                     </div>
                     <div className="px-2">
-                      <p className="text-sm"><strong>Fecha: </strong>{prestamo.diaSolicitud}</p>
-                      <p className="text-sm"><strong>Estado: </strong>{prestamo.estado} </p>
+                      <p className="text-sm"><strong>Monto Prestado: </strong>{prestamo.totaloriginal}</p>
+                      <p className="text-sm"><strong>Pendiente: </strong>{prestamo.totalprestado} </p>
+                      <p className="text-sm"><strong>Tasa: </strong>{prestamo.taza}%</p>
+                    </div>
+                    <div className="px-2">
+                      <p className="text-sm"><strong>Tiempo: </strong>{prestamo.tiempo} meses</p>
+                      <p className="text-sm"><strong>Mensualidad: </strong>{prestamo.montomensual} </p>
+                      <p className="text-sm"><strong>Tasa: </strong>{prestamo.taza}%</p>
                     </div>
                   </div>
                 ) : (
-                  <p>Movimiento no encontrado</p>
+                  <p>Prestamo no encontrado</p>
                 )}
 
 
