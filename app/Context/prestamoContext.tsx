@@ -28,7 +28,7 @@ export const PrestamoContext = createContext<PrestamoContextType | undefined>(un
 
 // Define el proveedor
 export const PrestamoProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [prestamo, setPrestamo] = useState<Prestamo | null>(null); // Inicialmente no hay socio
+  const [prestamo, setPrestamo] = useState<Prestamo | null>(null); 
 
   return (
     <PrestamoContext.Provider value={{ prestamo, setPrestamo }}>

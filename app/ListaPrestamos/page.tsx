@@ -1,18 +1,19 @@
 "use client";
 
-import { obtenerPrestamos } from '@/app/actions'
+import { obtenerPrestamos, obtenerPrestamosPorCooperativa } from '@/app/actions'
 
 import React, { useState, useEffect, useRef } from "react";
-import { usePrestamos } from "../uses/usePrestamos";
+import { useTranprestamos } from "../uses/useTranprestamos";
 import { HiAdjustments } from "react-icons/hi";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
 import Cookies from 'js-cookie';
+import { PrestamosExtendido } from "@/app/Context/tranprestamosContext";
 
 
 const ListaPrestamos: React.FC =  () => {
 
-  const { prestamos, setPrestamos } = usePrestamos()!; // Usamos el contextoconst [search, setSearch] = useState("");
+  const { prestamos, setPrestamos } = useTranprestamos(); // Usamos el contextoconst [search, setSearch] = useState("");
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "id">("asc");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,17 +24,34 @@ const ListaPrestamos: React.FC =  () => {
    // Inicializa la lista de prestamos una vez (si está vacía)
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch('/prestamos.json');
-      const data = await response.json();
-      setPrestamos(data); // Cargamos los datos en el estado
+      const { success, data, error } = await obtenerPrestamosPorCooperativa("1");
+      if (success && Array.isArray(data)) {
+        console.log(data);
+        const transformedData: PrestamosExtendido[] = data.map((item) => {
+          //@ts-ignore
+          const nombreSocio = item.socios?.nombre || "Nombre no disponible";
+          //@ts-ignore
+          const correoSocio = item.socios?.correo || "Nombre no disponible";
+
+          return {
+            prestamoid: item.prestamoid,
+            socioid: item.socioid,
+            nombresocio: nombreSocio,
+            correosocio: correoSocio,
+            monto: item.totaloriginal,
+            taza: item.taza,
+            fecha: item.fecha,
+            representante:""
+          };
+        });
+        setPrestamos(transformedData);
+      } else {
+        console.error('Error fetching prestamos:', error || 'Invalid data');
+      }
     };
     
     fetchData();
-  }, [setPrestamos, prestamos]);
-
-  useEffect(() => {
-    obtenerPrestamos();
-  }, []);
+  }, [setPrestamos]);
 
   // Cerrar el menú si se hace clic fuera de él
   useEffect(() => {
@@ -60,9 +78,9 @@ const ListaPrestamos: React.FC =  () => {
   // Función para ordenar los datos
   const handleSort = (criteria: "asc" | "desc" | "id") => {
     const sorted = [...prestamos].sort((a, b) => {
-      if (criteria === "id") return a.id.localeCompare(b.id);
-      if (criteria === "asc") return a.montoPrestado - b.montoPrestado;
-      return b.montoPrestado - a.montoPrestado;
+      if (criteria === "id") return (a.prestamoid - b.prestamoid);
+      if (criteria === "asc") return a.monto - b.monto;
+      return b.monto - a.monto;
     });
 
     setSortOrder(criteria); // Actualiza el estado de `sortOrder`
@@ -70,7 +88,7 @@ const ListaPrestamos: React.FC =  () => {
   };
 
   // Filtrar los datos según la búsqueda
-  const filteredPrestamos = prestamos.filter((prestamo) =>
+  const filteredPrestamos = (prestamos || []).filter((prestamo) =>
     Object.values(prestamo).some((value) =>
       value.toString().toLowerCase().includes(search.toLowerCase())
     )
@@ -166,8 +184,8 @@ const ListaPrestamos: React.FC =  () => {
               <th className="p-2 border border-gray-300">Email</th>
               <th className="p-2 border border-gray-300">Dia Solicitud</th>
               <th className="p-2 border border-gray-300">Monto Prestado</th>
-              <th className="p-2 border border-gray-300">Estado</th>
               <th className="p-2 border border-gray-300">Tasa Interes</th>
+              <th className="p-2 border border-gray-300">Fecha</th>
               <th className="p-2 border border-gray-300">Acciones</th>
             </tr>
           </thead>
@@ -177,18 +195,18 @@ const ListaPrestamos: React.FC =  () => {
                 key={index}
                 className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
               >
-                <td className="p-2 border border-gray-300">{prestamo.id}</td>
-                <td className="p-2 border border-gray-300">{prestamo.nombre}</td>
-                <td className="p-2 border border-gray-300">{prestamo.email}</td>
-                <td className="p-2 border border-gray-300">{prestamo.diaSolicitud}</td>
-                <td className="p-2 border border-gray-300">{prestamo.montoPrestado}</td>
-                <td className="p-2 border border-gray-300">{prestamo.estado}</td>
-                <td className="p-2 border border-gray-300">{prestamo.tasaInteres}</td>
+                <td className="p-2 border border-gray-300">{prestamo.prestamoid}</td>
+                <td className="p-2 border border-gray-300">{prestamo.nombresocio}</td>
+                <td className="p-2 border border-gray-300">{prestamo.correosocio}</td>
+                <td className="p-2 border border-gray-300">{prestamo.fecha}</td>
+                <td className="p-2 border border-gray-300">{prestamo.monto}</td>
+                <td className="p-2 border border-gray-300">{prestamo.taza}</td>
+                <td className="p-2 border border-gray-300">{prestamo.fecha}</td>
                 <td className="p-2 border border-gray-300 text-center">
                   <Link
-                    href={`/ListaPrestamos/${prestamo.id}`}
+                    href={`/ListaPrestamos/${prestamo.prestamoid}`}
                     className="text-[#00755D] hover:text-[#e6be31]"
-                    onClick={() => handleSaveIdInCookies(prestamo.id)} 
+                    onClick={() => handleSaveIdInCookies(String(prestamo.prestamoid))} 
                   >
                     <IoEyeSharp className="inline-block" size={25} />
                   </Link>
