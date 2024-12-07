@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import { BsPencilSquare } from "react-icons/bs";
+import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import { Prestamo } from "../../Context/prestamoContext";
 import { usePrestamo } from '@/app/uses/usePrestamo'

@@ -2,7 +2,6 @@
 'use server'
 import { createClient } from '@supabase/supabase-js';
 import {Prestamo } from '@/app/Context/prestamoContext'
-import Cookies from "js-cookie";
 
 const supabase = createClient("https://akufmgyltmzzfypsqmll.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrdWZtZ3lsdG16emZ5cHNxbWxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMzNDU0MDksImV4cCI6MjA0ODkyMTQwOX0.kb_JHFPDDkh2VSQ9z3FvPRQ_DEpgh1ryGYZQvqjdh84")
 
@@ -759,7 +758,6 @@ export const insertarRepresentante = async (
     } = formData;
 
     // Obtenemos la fecha actual
-    const fechaCreacion = await obtenerFechaActual();
     const generoData =  genero == 'masculino' ? 'M':
                         genero == 'femenino' ? 'F' :
                         'X';
@@ -823,7 +821,6 @@ export const actualizarRepresentante = async (
     } = formData;
 
     // Obtenemos la fecha actual
-    const fechaCreacion = await obtenerFechaActual();
     const generoData =  genero == 'masculino' ? 'M':
                         genero == 'femenino' ? 'F' :
                         'X';

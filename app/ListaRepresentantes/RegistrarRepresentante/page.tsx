@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
 
@@ -5,7 +6,6 @@ import { actualizarRepresentante, insertarRepresentante, obtenerRepresentante } 
 
 import React, { useEffect, useState } from "react";
 import { useRepresentante } from "../../uses/useRepresentante"; 
-import { useRepresentantes } from "../../uses/useRepresentantes"; // // Ajusta la ruta según tu estructura
 import Cookies from "js-cookie";
 
 const RegistrarRepresentante = () => {

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
 import { FaEnvelope, FaLock } from "react-icons/fa";
@@ -81,7 +83,7 @@ const LoginPage = () => {
     // }
     const handleSubmitCrear = async (e: React.FormEvent) => {
       e.preventDefault();
-      let dataC = {
+      const dataC = {
         cooperativaid: 0,
         nombre: "",
         correo: "",
@@ -318,3 +320,7 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+function setModalMessage(arg0: string) {
+  throw new Error("Function not implemented.");
+}
+

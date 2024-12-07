@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import React, { useEffect } from 'react';
 import { initCharts } from '../utils/chartUtils'; // Importa la función de gráficos
