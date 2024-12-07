@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import { obtenerSocio, insertarSocio, actualizarSocio } from '@/app/actions'
 

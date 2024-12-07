@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
 import { 
@@ -25,7 +26,6 @@ const DetallesSocio = () => {
   const [search] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  let monto = 0;
 
   // useEffect para cargar los datos del API
   useEffect(() => {
@@ -108,9 +108,6 @@ const DetallesSocio = () => {
   const totalPages = Math.ceil(filteredMovimientos.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const dataMovimientos = filteredMovimientos.slice(startIndex, startIndex + rowsPerPage);
-  if (dataMovimientos[0] ) {
-    dataMovimientos[0].tipo == "Depósito" ? monto = dataMovimientos[0].monto : 0;
-  }
   // Si el socio existe, se muestra el nombre. Si no, se puede mostrar un mensaje de error.
   const nombreSocio = socio ? socio.nombre : "Socio no encontrado";
   const cedula = socio ? String(socio.cedula) || 0 : "Socio no encontrado"

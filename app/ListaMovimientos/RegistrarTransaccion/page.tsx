@@ -6,20 +6,21 @@ import {
 
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { useSocio } from "../../uses/useSocio";
 import { usePrestamos } from '@/app/uses/usePrestamos';
 
 const RegistrarTransaccion = () => {
-  
-  const socioId = Cookies.get("socioId");
+
   const [showModal, setShowModal] = useState(false);  // Estado para mostrar el modal
   const [modalMessage, setModalMessage] = useState(""); //
   // const { socio, setSocio } = useSocio();
   const { prestamos, setPrestamos } = usePrestamos();
-  const id = socioId // Obtén el valor del parámetro 'id'
   const cookie = Cookies.get("socioId")
-  if(cookie != undefined)
-    var socioID = cookie;
+  let socioID ="";
+  let id ="";
+  if(cookie != undefined){
+    socioID = cookie;
+    id = cookie;
+  }
 
   //Inizializa lista de prestamos actuales de socio
   useEffect(() => {
@@ -45,7 +46,8 @@ const RegistrarTransaccion = () => {
     monto: 0,
     tipo: "",
     estado:'',
-    descripcion: ""
+    descripcion: "",
+    cooperativaid: 0
   });
 
   useEffect(() => {
@@ -55,18 +57,13 @@ const RegistrarTransaccion = () => {
       monto: 0,
       tipo: "",
       estado:'1',
-      descripcion: ""
+      descripcion: "",
+      cooperativaid: 1
     });
   }, [id]);
 
   //Validacion de datos en los campos
   const validateForm = () => {
-    const requiredFields = [
-      'prestamoid',
-      'monto',
-      'tipo',
-      'descripcion',
-    ];
 
     // Validación de monto (debe ser mayor que 0)
     if (isNaN(formData.monto) || formData.monto <= 0) {
@@ -90,7 +87,8 @@ const RegistrarTransaccion = () => {
     const dataToSubmit = { ...formData, representanteid: 1 };
 
     if (validateForm()) {
-      const { success, error } = await insertarTransaccion(socioID, formData);
+      const { success, error } = await insertarTransaccion(socioID, dataToSubmit);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       success ? 
         (
           console.log("Datos enviados:", formData),

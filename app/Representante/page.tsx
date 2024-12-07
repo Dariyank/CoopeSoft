@@ -4,30 +4,6 @@ import React from "react";
 const RepresentantePage = () => {
   return (
     <div className="min-h-screen bg-white">
-      {/* Navbar
-      <nav className="bg-white flex items-center justify-between px-6 py-4 border-b">
-        <div className="flex items-center space-x-2">
-          <Image
-            src="/img/Logo.png"
-            alt="Coopesoft Logo"
-            width={50}
-            height={50}
-          />
-          <span className="text-xl font-bold text-[#00755D]">Coopesoft</span>
-        </div>
-        <div className="flex items-center space-x-6">
-          <a href="/" className="text-[#00755D] font-semibold hover:underline">
-            Buscar Socio
-          </a>
-          <a href="/" className="text-[#00755D] font-semibold hover:underline">
-            Registrar Socio
-          </a>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="font-semibold text-[#00755D]">Juana Delgado</span>
-          <div className="text-sm text-gray-500">Cerrar sesión</div>
-        </div>
-      </nav> */}
 
       {/* Main Content */}
       <main className="p-6">
