@@ -18,9 +18,9 @@ const transaccionesPromise = obtenerTrasaccionesPorCooperativa(cooperativaId);
 const sociosPromise = obtenerSociosPorCooperativa(cooperativaId);
 
 const [
-  { success: prestamosSuccess, data: prestamosData, error: prestamosError },
-  { success: transaccionesSuccess, data: transaccionesData, error: transaccionesError },
-  { success: sociosSuccess, data: sociosData, error: sociosError }
+  { data: prestamosData},
+  {  data: transaccionesData },
+  { data: sociosData }
 ] = await Promise.all([prestamosPromise, transaccionesPromise, sociosPromise]);
     
 // Ensure data is always defined, even if the requests fail
