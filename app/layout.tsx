@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 import localFont from "next/font/local";
 import "./globals.css";
 import NavBar from './NavBar';
-import { CooperativaProvider } from './Context/cooperativaContext'
 import { SociosProvider } from './Context/sociosContext'; 
 import { SocioProvider } from './Context/socioContext'; // Ajusta la ruta según tu contexto
 import { MovimientoProvider } from './Context/movContext';
@@ -41,7 +40,6 @@ export function useCurrentPath() {
 // };
 
 const providers = [
-  CooperativaProvider,
   RepresentantesProvider, 
   RepresentanteProvider, 
   SociosProvider, 
