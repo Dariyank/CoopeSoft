@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 
-import { obtenerPrestamos, obtenerPrestamosPorCooperativa } from '@/app/actions'
+import { obtenerPrestamosPorCooperativa } from '@/app/actions'
 
 import React, { useState, useEffect, useRef } from "react";
 import { useTranprestamos } from "../uses/useTranprestamos";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
 
@@ -14,14 +15,12 @@ import { IoEyeSharp } from "react-icons/io5";
 import { TransaccionesExtendida } from "../../Context/tramovimientosContext";
 
 import Link from "next/link";
-import { useMovimientos } from "@/app/uses/useMovimientos"; // Importa el hook del contexto
 import { useRepresentante } from '@/app/uses/useRepresentante';
 
 const DetallesRepresentante = () => {
 
   const [movimiento, setMovimiento] = useState<TransaccionesExtendida[] | null>(null);
   const { representante, setRepresentante } = useRepresentante();
-  const { movimientos, setMovimientos } = useMovimientos()!; // Usamos el contextoconst [search, setSearch] = useState(""); 
   const [search] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);

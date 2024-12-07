@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 'use client';
 import { FaDollarSign } from "react-icons/fa6";
 import { FaUsers } from "react-icons/fa";
